@@ -1,9 +1,6 @@
-const Repository = require('./base').Repository;
-class EmployeeRepository extends Repository{
-    constructor() {
-        super();
-    }
 
+class EmployeeRepository extends Repository{
+    
     findAll = async function(){
         const query = "SELECT * FROM EMPLOYEES";
         const params = [];

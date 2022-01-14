@@ -14,7 +14,9 @@ const router = require('express-promise-router')();
 // });
 
 // DIVIDE THE ROUTES ACCORDING TO THE DATA WHATEVER
-router.use("/employee",require('./employee'));
-router.use("/job",require('./job'));
+// router.use("/stats",require('./employee'));
+// router.use("/job",require('./job'));
+
+router.use("/club", require('./club'))
 
 module.exports = router;
