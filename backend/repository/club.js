@@ -1,6 +1,7 @@
-const { close, getConnection } = require("../config/database");
+const { getConnection } = require("../config/database");
+const { TABLE_CLUB } = require("../model/club");
 
-const FIND_ALL_CLUB_QUERY = `SELECT * FROM "C##FPL"."club"`
+const FIND_ALL_CLUB_QUERY = `SELECT * FROM ${TABLE_CLUB}`
 
 
 const findAll = async () => {

@@ -1,7 +1,8 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Link as RouterLink } from 'react-router-dom';
+import { getAllClubs } from "../../api";
 
 
 const RegisterPage = () => {
@@ -11,6 +12,15 @@ const RegisterPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [favouriteClub, setFavouriteClub] = useState('');
+    const [allClub, setAllClub] = useState([]);
+
+    useEffect( () => {
+        getAllClubs().then( data => {
+            setAllClub(data)
+        }).catch( err => {
+            console.log(err);
+        })
+    }, [])
 
     return (<>
         <Typography variant="h6">
@@ -36,8 +46,8 @@ const RegisterPage = () => {
                     onChange={ e => { e.target.value && setFavouriteClub(e.target.value)}}
                 >
                     <MenuItem value=''>Select</MenuItem>
-                    {['Arsenal', 'Chelsea'].map( v => (
-                        <MenuItem value={v} key={v}>{v}</MenuItem>
+                    {allClub.map( v => (
+                        <MenuItem value={v.short_name} key={v.short_name}>{v.name}</MenuItem>
                     ))}
                 </Select>
             </FormControl>

@@ -2,14 +2,17 @@ import { Button, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useState } from "react";
 import { Link, Link as RouterLink, useNavigate } from 'react-router-dom';
+import { login } from "../../api";
+import { useSnackbar } from 'material-ui-snackbar-provider'
 
 
 const HomePage = () => {
     
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
+    const snackbar = useSnackbar()
 
     return (<>
         <Typography variant="h6">
@@ -18,12 +21,17 @@ const HomePage = () => {
 
         <Box component='form' sx={{mt: 3, width: '60%'}} onSubmit={ e=> {
             e.preventDefault()
-            localStorage.setItem('JWT', 'PLACEHOLDER-VALUE');
-            navigate('/');
-            window.location.reload();
+
+            login({username, password}).then( data => {
+                localStorage.setItem('JWT', data.jwt);
+                navigate('/');
+                window.location.reload();
+            }).catch( err => {
+                snackbar.showMessage(err.response.data.info);
+            })
         }}>
-            <TextField variant='outlined' type={'text'} label='Email' sx={{display: 'block'}} margin='normal' size='small' fullWidth
-            value={email} onChange={e=>{setEmail(e.target.value)}} />
+            <TextField variant='outlined' type={'text'} label='Username' sx={{display: 'block'}} margin='normal' size='small' fullWidth
+            value={username} onChange={e=>{setUsername(e.target.value)}} />
             <TextField type={'password'} variant='outlined' label='Password' sx={{display: 'block'}} margin="normal" size='small' fullWidth
             value={password} onChange={e=>{setPassword(e.target.value)}} />
 

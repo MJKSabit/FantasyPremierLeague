@@ -6,15 +6,18 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/system';
 import theme from './config/theme';
+import SnackbarProvider from 'material-ui-snackbar-provider/lib/SnackbarProvider';
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider theme={theme} >
-        <App />
-      </ThemeProvider>
-    </BrowserRouter>
+    <SnackbarProvider SnackbarProps={{ autoHideDuration: 4000 }}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme} >
+          <App />
+        </ThemeProvider>
+      </BrowserRouter>
+    </SnackbarProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
