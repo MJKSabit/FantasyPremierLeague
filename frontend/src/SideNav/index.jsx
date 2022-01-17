@@ -9,6 +9,7 @@ import { makeStyles } from "@mui/styles";
 import { NavLink } from "react-router-dom";
 import UserNav from './UserNav';
 import AnonymousNav from './AnonymousNav';
+import decodeJWT from '../util/common';
 
 export const useStyles = makeStyles(() => ({
     menubtn: {
@@ -20,7 +21,7 @@ export const useStyles = makeStyles(() => ({
 
 const SignedInNav = () => {
 
-    const userType = 'user';
+    const userType = decodeJWT(localStorage.getItem('JWT'));
 
     if (userType === 'user') {
         return <UserNav />

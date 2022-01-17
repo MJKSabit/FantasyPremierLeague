@@ -23,7 +23,7 @@ function Structure() {
   const navigate = useNavigate();
 
   useEffect( () => {
-    if (!isSignedIn) { 
+    if (!isSignedIn && localStorage.getItem('JWT')) { 
       localStorage.removeItem('JWT');
       navigate('/');
     }

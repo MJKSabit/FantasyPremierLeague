@@ -1,5 +1,5 @@
 const { getConnection } = require("oracledb")
-const { TABLE_USER_USERNAME, TABLE_USER_NAME, TABLE_USER_PASSWORD, TABLE_USER } = require("../model/user")
+const { TABLE_USER_USERNAME, TABLE_USER } = require("./constants")
 
 const GET_ONE_USER_QUERY = `SELECT * FROM ${TABLE_USER} WHERE ${TABLE_USER_USERNAME} = :1`
 

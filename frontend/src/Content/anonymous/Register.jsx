@@ -8,6 +8,7 @@ import { getAllClubs } from "../../api";
 const RegisterPage = () => {
     
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,6 +23,8 @@ const RegisterPage = () => {
         })
     }, [])
 
+    console.log('Loaded RegisterPage');
+
     return (<>
         <Typography variant="h6">
             Create a new account and get into <Box sx={{ fontWeight: '700'}} component='span'>Fantasy Premier League</Box>.
@@ -33,6 +36,9 @@ const RegisterPage = () => {
 
             <TextField variant='outlined' type={'text'} label='Email' sx={{display: 'block'}} margin='normal' size='small' fullWidth
             value={email} onChange={e=>{setEmail(e.target.value)}} />
+
+            <TextField variant='outlined' type={'text'} label='Username' sx={{display: 'block', mb: 4}} margin='normal' size='small' fullWidth
+            value={username} onChange={e=>{setUsername(e.target.value)}} />
             
             <TextField variant='outlined' type={'text'} label='Name' sx={{display: 'block'}} margin='normal' size='small' fullWidth
             value={name} onChange={e=>{setName(e.target.value)}} />

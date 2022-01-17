@@ -1,5 +1,5 @@
 const { getConnection } = require("../config/database");
-const { TABLE_CLUB } = require("../model/club");
+const { TABLE_CLUB } = require("./constants");
 
 const FIND_ALL_CLUB_QUERY = `SELECT * FROM ${TABLE_CLUB}`
 
