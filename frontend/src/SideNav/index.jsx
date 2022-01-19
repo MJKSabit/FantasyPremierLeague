@@ -4,12 +4,13 @@ import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import InfoIcon from '@mui/icons-material/Info';
 
-import { Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { NavLink } from "react-router-dom";
 import UserNav from './UserNav';
 import AnonymousNav from './AnonymousNav';
 import decodeJWT from '../util/common';
+import { useState } from 'react';
 
 export const useStyles = makeStyles(() => ({
     menubtn: {
@@ -21,7 +22,7 @@ export const useStyles = makeStyles(() => ({
 
 const SignedInNav = () => {
 
-    const userType = decodeJWT(localStorage.getItem('JWT'));
+    const userType = 'user'; decodeJWT(localStorage.getItem('JWT'));
 
     if (userType === 'user') {
         return <UserNav />
@@ -32,6 +33,35 @@ const SignedInNav = () => {
             <ListItemIcon><HomeIcon /></ListItemIcon>
             <ListItemText primary={'Home'} />
         </ListItemButton>
+    </>)
+}
+
+const FooterWithDialog = () => {
+    const [open, setOpen] = useState(false)
+
+    return (<>
+        <ListItemButton onClick={ () => {setOpen(true)}}>
+            <ListItemIcon><InfoIcon /></ListItemIcon>
+            <ListItemText>Information</ListItemText>
+        </ListItemButton>
+        <Dialog open={open} onClose={ () => {setOpen(false)}} >
+            <DialogTitle>Fantasy Premier League: Developers</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    <Typography variant='h5'>Md. Jehadul Karim (Sabit)</Typography>
+                    <Typography variant='subtitle'>Favourite Club: Arsenal</Typography>
+                    
+                    <Typography variant='h5' sx={{mt: 2}}>Al Amru Bil Maruf</Typography>
+                    <Typography variant='subtitle'>Favourite Club: Chelsea</Typography>
+                    
+                </DialogContentText>
+                <DialogActions>
+                    <Button onClick={ () => {setOpen(false)}} variant="contained">
+                        Okay
+                    </Button>
+                </DialogActions>
+            </DialogContent>
+        </Dialog>
     </>)
 }
 
@@ -73,10 +103,7 @@ export default function LeftNavigation({signedIn}) {
         {/* Footer */}
         <List style={{width: '100%', position: 'absolute', bottom: '0', height: footerHeight}} >
             <Divider />
-            <ListItemButton>
-                <ListItemIcon><InfoIcon /></ListItemIcon>
-                <ListItemText>Information</ListItemText>
-            </ListItemButton>
+            <FooterWithDialog />
         </List>
     </>) 
 }

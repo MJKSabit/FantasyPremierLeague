@@ -12,7 +12,7 @@ export const Blog = () => {
             <img src='https://mui.com/static/images/cards/contemplative-reptile.jpg' style={{width: '100%'}} alt='Blog Img'/>
             <div className="content">
             <Typography variant="h4">
-                Tottenham is Shit    
+                London is Red    
             </Typography>
             <Typography variant="subtitle">
                 Md. Jehadul Karim • 30 Jan 2020
@@ -35,7 +35,7 @@ const BlogCard = () => {
             <CardMedia component='img' height={140} image="https://mui.com/static/images/cards/contemplative-reptile.jpg" />
             <CardContent>
                 <Typography gutterBottom variant="h6" component='div'>
-                    Tottenham is Shit
+                    London is Crimson
                 </Typography>
                 <Typography variant="subtitle2">
                     Md. Jehadul Karim Sabit • 30 Jan 2020
