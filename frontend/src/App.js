@@ -37,10 +37,14 @@ function Structure() {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Fantasy Premier League
           </Typography>
-          { isSignedIn ?
+          { isSignedIn ? <>
+            <Button color="inherit" onClick={ () => {navigate('/settings')}}>
+                Settings
+              </Button>
             <Button color="inherit" onClick={()=>{
               setSignedIn(false);
-            }}>Log Out</Button> :
+            }}>Log Out</Button>
+            </> :
             <>
               <Button color="inherit" onClick={ () => {navigate('/register')}}>
                 Register

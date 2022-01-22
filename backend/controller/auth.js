@@ -1,7 +1,13 @@
 const bcryptjs = require('bcryptjs')
 const user = require('../repository/user')
 const HttpStatus = require('./HttpStatus')
-const { generate } = require('../util/jwt')
+const jwt = require("jsonwebtoken");
+
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || 'i-do-not-care-what-the-key-is'
+
+const generate = (payload, expiresIn = '48h') => (
+    jwt.sign(payload, JWT_SECRET_KEY, {expiresIn})
+)
 
 const login = async (req, res) => {
     const {username, password} = req.body

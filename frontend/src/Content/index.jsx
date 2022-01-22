@@ -1,5 +1,7 @@
 import { Box, Container, CssBaseline, Paper, Typography } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
+import PlayerManagement from "./admin/PlayerManagement";
+import UserManagement from "./admin/UserManagement";
 import BlogList, { Blog } from "./anonymous/Blog";
 import Fixture from "./anonymous/Fixture";
 import ForgotPasswordPage from "./anonymous/Forgot";
@@ -28,6 +30,10 @@ const CenterContent = () => (
                     <Route path='register' element={<RegisterPage />} />
                     <Route path='user'>
                         <Route path='home' element={<UserHome />} />
+                    </Route>
+                    <Route path='admin'>
+                        <Route path='user' element={<UserManagement />} />
+                        <Route path='player' element={<PlayerManagement />} />
                     </Route>
                 </Routes>
             </Paper>

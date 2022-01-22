@@ -11,6 +11,7 @@ import UserNav from './UserNav';
 import AnonymousNav from './AnonymousNav';
 import decodeJWT from '../util/common';
 import { useState } from 'react';
+import AdminNav from './AdminNav';
 
 export const useStyles = makeStyles(() => ({
     menubtn: {
@@ -22,10 +23,12 @@ export const useStyles = makeStyles(() => ({
 
 const SignedInNav = () => {
 
-    const userType = 'user'; decodeJWT(localStorage.getItem('JWT'));
+    const userType = decodeJWT(localStorage.getItem('JWT')).user_type; 
 
-    if (userType === 'user') {
+    if (userType === 'USER') {
         return <UserNav />
+    } else if (userType === 'ADMIN') {
+        return <AdminNav />
     }
 
     return (<>

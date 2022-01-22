@@ -23,8 +23,6 @@ const RegisterPage = () => {
         })
     }, [])
 
-    console.log('Loaded RegisterPage');
-
     return (<>
         <Typography variant="h6">
             Create a new account and get into <Box sx={{ fontWeight: '700'}} component='span'>Fantasy Premier League</Box>.
