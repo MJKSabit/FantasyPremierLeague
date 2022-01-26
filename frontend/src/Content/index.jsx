@@ -9,6 +9,7 @@ import ForgotPasswordPage from "./anonymous/Forgot";
 import HomePage from './anonymous/Home'
 import RegisterPage from "./anonymous/Register";
 import StatPage from "./anonymous/Stat";
+import CreateBlog from "./scout/CreateBlog";
 import UserHome from "./user/UserHome";
 
 const CenterContent = () => (
@@ -34,6 +35,9 @@ const CenterContent = () => (
                     <Route path='admin'>
                         <Route path='user' element={<UserManagement />} />
                         <Route path='player' element={<PlayerManagement />} />
+                    </Route>
+                    <Route path='scout'>
+                        <Route path='create' element={<CreateBlog />} />
                     </Route>
                 </Routes>
             </Paper>
