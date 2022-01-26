@@ -9,7 +9,7 @@ const PlayerManagement = () => {
 
     const [page, setPage] = useState(1)
     const [query, setQuery] = useState('')
-    const [users, setUsers] = useState([{username: 'MJKSabit', name: 'Md. Jehadul Karim', email: 'sabit.jehadul.karim@gmail.com', disabled: 0, user_type: 'ADMIN'}])
+    const [players, setPlayers] = useState([{id: 1989, name: "Lacazette", position: 'FWD', availibility: 'Available', availibility_percentage: 100, price_current: 8.4, club: 'ARS'}])
 
     const [allClub, setAllClub] = useState([]);
     const [playerClub, setUserClub] = useState('');
@@ -41,9 +41,9 @@ const PlayerManagement = () => {
             </Grid>
             <Grid item xs={5}>
             <FormControl size="small" fullWidth>
-                <InputLabel id='fav-club-label'>Club</InputLabel>
+                <InputLabel id='club-label'>Club</InputLabel>
 
-                <Select labelId="fav-club-label"
+                <Select labelId="club-label"
                     value={playerClub}
                     label='Favourite Club'
                     onChange={ e => { e.target.value && setUserClub(e.target.value)}}
@@ -63,7 +63,7 @@ const PlayerManagement = () => {
         </Grid>
 
         <Grid container justifyContent="flex-start" alignItems="center" sx={{mt: 4}}>
-            {users.map(value => <PlayerCard data={value} />)}
+            {players.map(value => <PlayerCard data={value} />)}
         </Grid>
     </>)
 }
@@ -72,23 +72,26 @@ const PlayerCard = ({data}) => {
     if (!data)
         return null
     
-    const {username, email, name, disabled, user_type} = data
+    const {id, name, position, availibility, availibility_percentage, price_current, club, club_logo} = data
     
     return <Grid item xs={6}>
         <Card sx={{width: '100%'}} >
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                    {username} 
-                <Chip label={`Type: ${user_type}`} sx={{mx: 2}}/>
+                    {name} 
+                <Chip label={`${position}`} sx={{mx: 2}}/>
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {name} <br />
-                    {email}
+                    {club} <br />
+                    {availibility} ({availibility_percentage}%) - {price_current}
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" variant='outlined' color="error">
-                    {disabled ? 'Enable' : 'Disable'}
+                <Button size="small" variant='text' color="success">
+                    Edit
+                </Button>
+                <Button size="small" variant='text' color="error">
+                    Remove
                 </Button>
             </CardActions>
         </Card>

@@ -10,6 +10,7 @@ module.exports.connect = async () => {
         poolIncrement: 0,
     });
 
+    oracledb.autoCommit = true;
     oracledb.outFormat = oracledb.OBJECT;
 
     console.log('Config/Database: Connected to Oracle Database');

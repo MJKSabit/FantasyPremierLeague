@@ -5,6 +5,7 @@
 const { errorInfo } = require("../controller/HttpStatus");
 const HttpStatus = require("../controller/HttpStatus");
 const jwt = require('jsonwebtoken');
+const { USER_TYPE_ADMIN, USER_TYPE_SCOUT, USER_TYPE_USER } = require("../repository/constants");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || 'i-do-not-care-what-the-key-is'
 
@@ -39,8 +40,8 @@ function typeBasedAuth(allowedUserTypes) {
     }
 }
 
-const ADMIN_AUTH = typeBasedAuth(['ADMIN'])
-const SCOUT_AUTH = typeBasedAuth(['SCOUT'])
-const USER_AUTH = typeBasedAuth(['USER'])
+const ADMIN_AUTH = typeBasedAuth([USER_TYPE_ADMIN])
+const SCOUT_AUTH = typeBasedAuth([USER_TYPE_SCOUT])
+const USER_AUTH = typeBasedAuth([USER_TYPE_USER])
 
 module.exports = {addUserToRequest, ADMIN_AUTH, SCOUT_AUTH, USER_AUTH}
