@@ -10,5 +10,6 @@ router.post('/auth/login', auth.login)
 // router.post('/auth/fotgot', auth.forgotPassword)
 
 router.get('/blog', public.getAllBlogs)
+router.get('/blog/:id', public.getBlog)
 
 module.exports = router
