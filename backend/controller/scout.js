@@ -1,5 +1,5 @@
 const blog = require('../repository/blog')
-const { BAD_REQUEST, errorInfo, CREATED } = require('./HttpStatus')
+const { BAD_REQUEST, errorInfo, CREATED, OK } = require('./HttpStatus')
 
 
 const createBlog = async (req, res) => {
@@ -22,4 +22,11 @@ const createBlog = async (req, res) => {
     res.status(CREATED).json(result)
 }
 
-module.exports = {createBlog}
+const getMyBlog = async (req, res) => {
+    const username = req.user.username
+    const p = Number.parseInt(req.query.p || '1') - 1
+
+    res.status(OK).json(await blog.getUserBlogs(username, p))
+}
+
+module.exports = {createBlog, getMyBlog}
