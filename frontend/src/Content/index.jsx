@@ -1,5 +1,6 @@
 import { Box, Container, CssBaseline, Paper, Typography } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
+import { getScoutBlog } from "../api";
 import PlayerManagement from "./admin/PlayerManagement";
 import UserManagement from "./admin/UserManagement";
 import BlogList, { Blog } from "./anonymous/Blog";
@@ -38,7 +39,9 @@ const CenterContent = () => (
                     </Route>
                     <Route path='scout'>
                         <Route path='create' element={<CreateBlog />} />
+                        <Route path='my' element={<BlogList disableLoading={true} getBlogs={getScoutBlog}/>} />
                     </Route>
+                    <Route path='settings' element={<div>Change Password</div>} />
                 </Routes>
             </Paper>
         </Container>

@@ -24,10 +24,16 @@ const ScoutNav = () => {
             </ListItemButton>)}
         </NavLink>
 
-        <ListItemButton component={NavLink} to='/scout/my'>
-            <ListItemIcon><Description /></ListItemIcon>
-            <ListItemText primary={'My Blogs'} />
-        </ListItemButton>
+        <NavLink to='/scout/my' className={classes.menubtn}>
+            { ({isActive}) => (
+            <ListItemButton selected={isActive}>
+                <ListItemIcon><Description /></ListItemIcon>
+                <ListItemText primary={'My Blogs'} />
+            </ListItemButton>
+            )}
+        </NavLink>
+
+        
 
 
         <Routes >
