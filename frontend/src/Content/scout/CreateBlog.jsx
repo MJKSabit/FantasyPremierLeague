@@ -1,7 +1,7 @@
-import { Grid, TextField, Typography } from "@mui/material"
+import { Button, Grid, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useState } from "react";
-// import Editor from "rich-markdown-editor";
+import MDEditor from '@uiw/react-md-editor';
 import ImageUploader from "../components/ImageUploader";
 
 const CreateBlog = () => {
@@ -9,6 +9,7 @@ const CreateBlog = () => {
     const [title, setTitle] = useState('')
     const [cover, setCover] = useState(null)
     const [writing, setWriting] = useState('')
+    const [imageUrl, setImageUrl] = useState('')
 
     return (<>
 
@@ -20,7 +21,7 @@ const CreateBlog = () => {
             e.preventDefault()
         }}>
             
-            <TextField variant='outlined' type={'text'} label='Username' sx={{display: 'block'}} margin='normal' size='small' fullWidth
+            <TextField variant='outlined' type={'text'} label='Title' sx={{display: 'block'}} margin='normal' size='small' fullWidth
             value={title} onChange={e=>{setTitle(e.target.value)}} />
 
             <Grid container justifyContent="space-around" alignItems="center" sx={{my: 3}}>
@@ -32,8 +33,26 @@ const CreateBlog = () => {
                 </Grid>
             </Grid>
 
-            {/* <Editor defaultValue={writing} onChange={ e => {setWriting(e.toString())}} /> */}
+            <MDEditor value={writing} onChange={setWriting} height={400}/>
+            {/* <MDEditor.Markdown source={writing} /> */}
             
+            <Grid container direction="row" justifyContent="space-between" alignItems="center" sx={{my: 3}}>
+                
+                <Grid item xs={6}>
+                <TextField variant='outlined' type={'text'} label='Uploaded Image URL' sx={{display: 'block'}} margin='normal' size='small' fullWidth
+            value={imageUrl} />
+
+                    <ImageUploader init={imageUrl} onUpload={setImageUrl} />
+                </Grid>
+
+                <Grid item>
+                <Button variant="contained">
+                    Publish
+                </Button>
+                </Grid>
+                
+            </Grid>
+
         </Box>
 
     </>)
