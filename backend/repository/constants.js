@@ -26,6 +26,14 @@ module.exports = {
     TABLE_PLAYER_PRICE_CURRENT: `"price_current"`,
     TABLE_PLAYER_PRICE_CHANGED: `"price_last_changed"`,
     TABLE_PLAYER_PRICE_CHANGE_AMOUNT: `"price_change_amount"`,
+
+    TABLE_BLOG: `"C##FPL"."blog"`,
+    TABLE_BLOG_ID: `"id"`,
+    TABLE_BLOG_WRITER: `"writer"`,
+    TABLE_BLOG_PUBLICATION_DATE: `"publication_date"`,
+    TABLE_BLOG_TITLE: `"title"`,
+    TABLE_BLOG_COVER_IMAGE_URL: `"cover_image_url"`,
+    TABLE_BLOG_CONTENT: `"content"`,
     
     USER_TYPE_SCOUT: 'SCOUT',
     USER_TYPE_ADMIN: 'ADMIN',

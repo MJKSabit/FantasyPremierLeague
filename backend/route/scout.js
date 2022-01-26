@@ -5,6 +5,7 @@ const controller = require('../controller/scout')
 
 router.use(SCOUT_AUTH)
 
+router.post('/blog', controller.createBlog)
 
 
 module.exports = router;
