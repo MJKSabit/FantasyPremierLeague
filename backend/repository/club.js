@@ -8,7 +8,7 @@ const findAll = async () => {
     const connection = await getConnection()
     const result = await connection.execute(FIND_ALL_CLUB_QUERY)
     connection.release()
-    return result
+    return result.rows
 }
 
 module.exports = { findAll }

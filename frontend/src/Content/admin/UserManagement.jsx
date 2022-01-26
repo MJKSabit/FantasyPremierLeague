@@ -1,9 +1,10 @@
 import { ArrowBackIos, ArrowForwardIos, Search } from "@mui/icons-material"
 import { Button, Card, CardActions, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, IconButton, Input, InputLabel, Link, MenuItem, Select, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system";
+import { useSnackbar } from "material-ui-snackbar-provider";
 import { useEffect, useState } from "react"
 import {Link as RouterLink } from 'react-router-dom';
-import { getAllClubs } from "../../api";
+import { addScout, disableUser, getAllClubs, getAllUsers } from "../../api";
 
 const UserManagement = () => {
 
@@ -13,6 +14,22 @@ const UserManagement = () => {
     
     const [dialogOpen, setDialogOpen] = useState(false)
     const closeDialog = () => {setDialogOpen(false)}
+
+    const snakbar = useSnackbar()
+
+    const fetchUser = () => {
+        getAllUsers(query, page).then(result => {
+            setUsers(result)
+        }).catch(err => {
+            console.log(err);
+            snakbar.showMessage(err.data.info || 'Error')
+        })
+    }
+
+    useEffect( () => {
+        if (!dialogOpen)
+            fetchUser()
+    }, [page, dialogOpen])
 
     return (<>
         <Typography variant="h5" sx={{mb: 4}}>
@@ -29,18 +46,20 @@ const UserManagement = () => {
                 </Dialog>
             </Grid>
             <Grid item xs={4}>
-                <TextField fullWidth placeholder="Search..." size='small' value={query} onChange={
-                    e => {setQuery(e.target.value)}
-                }/>
+                <TextField fullWidth placeholder="Search..." size='small' value={query} onChange={e => {setQuery(e.target.value)}} 
+                onKeyDown={e => {if (e.key === 'Enter') {
+                    if (page === 1) fetchUser()
+                    else setPage(1)
+                }}}/>
             </Grid>
             <Grid item xs={1}>
-                <IconButton fullWidth onClick={e => {console.log(query);}}>
+                <IconButton fullWidth onClick={ e => {if (page === 1) fetchUser(); else setPage(1);}}>
                     <Search />
                 </IconButton>
             </Grid>
             
             <Grid item xs={1}>
-                <IconButton fullWidth>
+                <IconButton fullWidth onClick={()=>{if (page>1) setPage(page-1)}}>
                     <ArrowBackIos />
                 </IconButton>
             </Grid>
@@ -52,23 +71,27 @@ const UserManagement = () => {
             </Grid>
 
             <Grid item xs={1}>
-                <IconButton fullWidth>
+                <IconButton fullWidth onClick={ () => {setPage(page+1)}}>
                     <ArrowForwardIos />
                 </IconButton>
             </Grid>
         </Grid>
 
-        <Grid container justifyContent="flex-start" alignItems="center" sx={{mt: 4}}>
+        <Grid container justifyContent="flex-start" alignItems="center" sx={{mt: 4}} spacing={2}>
             {users.map(value => <UserCard data={value} />)}
         </Grid>
     </>)
 }
 
 const UserCard = ({data}) => {
+    const [disabled, setDisabled] = useState(data && data.disabled)
+    const snackbar = useSnackbar()
+    
     if (!data)
         return null
     
-    const {username, email, name, disabled, user_type} = data
+    const {username, email, name, user_type} = data
+    
     
     return <Grid item xs={6}>
         <Card sx={{width: '100%'}} >
@@ -83,7 +106,15 @@ const UserCard = ({data}) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" variant='outlined' color="error">
+                <Button size="small" variant='outlined' color={disabled ? "success" : "error"} onClick={ e => {
+                    disableUser(username, !disabled).then(data => {
+                        snackbar.showMessage('Successfully Changed!')
+                        setDisabled(!disabled);
+                    }).catch( err => {
+                        snackbar.showMessage(err.data.info || 'Error!')
+                        console.log(err);
+                    })
+                }}>
                     {disabled ? 'Enable' : 'Disable'}
                 </Button>
             </CardActions>
@@ -92,6 +123,9 @@ const UserCard = ({data}) => {
 } 
 
 const AddScoutDialog = ({handleClose}) => {
+
+    const snackbar = useSnackbar()
+
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
@@ -146,7 +180,15 @@ const AddScoutDialog = ({handleClose}) => {
 
         <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose}>Create Scout Account</Button>
+            <Button onClick={ e => {
+                addScout({ username, name, password, email, favourite_club: favouriteClub}).then( data => {
+                    handleClose();
+                    snackbar.showMessage(`Scout: '${username}' Created`)
+                }).catch( err => {
+                    console.log(err.response.data);
+                    snackbar.showMessage(err.response.data.info || "Error")
+                })
+            }}>Create Scout Account</Button>
         </DialogActions>
     </>)
 }

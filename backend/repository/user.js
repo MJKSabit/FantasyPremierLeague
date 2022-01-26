@@ -11,7 +11,7 @@ const getUser = async (username) => {
     return result.rows
 }
 
-const GET_USERS_QUERY = `SELECT ${TABLE_USER_USERNAME}, ${TABLE_USER_EMAIL}, ${TABLE_USER_NAME}, ${TABLE_USER_DISABLED}, ${TABLE_USER_USER_TYPE} FROM ${TABLE_USER} WHERE ${TABLE_USER_USERNAME} like '%'||:1||'%' OFFSET :2 ROWS FETCH NEXT ${PAGE_SIZE} ROWS ONLY`
+const GET_USERS_QUERY = `SELECT ${TABLE_USER_USERNAME}, ${TABLE_USER_EMAIL}, ${TABLE_USER_NAME}, ${TABLE_USER_DISABLED}, ${TABLE_USER_USER_TYPE} FROM ${TABLE_USER} WHERE ${TABLE_USER_USERNAME} like '%'||:1||'%' OFFSET :2*${PAGE_SIZE} ROWS FETCH NEXT ${PAGE_SIZE} ROWS ONLY`
 
 const getUsers = async (match, page) => {
     const connection = await getConnection()

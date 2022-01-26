@@ -12,6 +12,7 @@ import AnonymousNav from './AnonymousNav';
 import decodeJWT from '../util/common';
 import { useState } from 'react';
 import AdminNav from './AdminNav';
+import ScoutNav from './ScoutNav';
 
 export const useStyles = makeStyles(() => ({
     menubtn: {
@@ -29,6 +30,8 @@ const SignedInNav = () => {
         return <UserNav />
     } else if (userType === 'ADMIN') {
         return <AdminNav />
+    } else if (userType === 'SCOUT') {
+        return <ScoutNav />
     }
 
     return (<>

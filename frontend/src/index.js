@@ -10,7 +10,6 @@ import SnackbarProvider from 'material-ui-snackbar-provider/lib/SnackbarProvider
 
 
 ReactDOM.render(
-  <React.StrictMode>
     <SnackbarProvider SnackbarProps={{ autoHideDuration: 4000 }}>
       <BrowserRouter>
         <ThemeProvider theme={theme} >
@@ -18,7 +17,7 @@ ReactDOM.render(
         </ThemeProvider>
       </BrowserRouter>
     </SnackbarProvider>
-  </React.StrictMode>,
+  ,
   document.getElementById('root')
 );
 
