@@ -2,9 +2,7 @@ import { ArrowBackIos, ArrowForwardIos, Search } from "@mui/icons-material"
 import { Button, Card, CardActions, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, IconButton, Input, InputLabel, Link, MenuItem, Select, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react"
-import {Link as RouterLink } from 'react-router-dom';
 import { getAllClubs, getClubPlayers } from "../../api";
-import GppGoodIcon from '@mui/icons-material/GppGood';
 
 const PlayerManagement = () => {
 
@@ -79,8 +77,12 @@ const PlayerManagement = () => {
 }
 
 const PlayerCard = ({data}) => {
+    const [editOpen, setEditOpen] = useState(false);
+
     if (!data)
         return null
+    
+    const closeDialog = () => {setEditOpen(false)}
     
     const {id, name, position, availibility_status, availibility_percentage, price_current, club, logo_url, player_club} = data
     
@@ -95,7 +97,7 @@ const PlayerCard = ({data}) => {
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             {player_club} <br />
-                            {availibility_status} ({availibility_percentage}%)  <br />
+                            {availibility_status} (<Box sx={{ fontWeight: '700'}} component='span'>{availibility_percentage}%</Box>)  <br />
                             ${Math.round(price_current*10)/10}
                         </Typography>
                     </Grid>
@@ -105,7 +107,7 @@ const PlayerCard = ({data}) => {
                 </Grid>
             </CardContent>
             <CardActions>
-                <Button size="small" variant='text' color="success">
+                <Button size="small" variant='text' color="success" onClick={ () => {setEditOpen(true)}}>
                     Edit
                 </Button>
                 <Button size="small" variant='text' color="error">
@@ -113,15 +115,67 @@ const PlayerCard = ({data}) => {
                 </Button>
             </CardActions>
         </Card>
+        <Dialog open={editOpen} onClose={closeDialog} fullWidth='true'>
+            <DialogTitle>Edit Player Status</DialogTitle>
+            <EditPlayerDialog handleClose={closeDialog} data={data} />
+        </Dialog>
     </Grid>
 } 
 
+const EditPlayerDialog = ({handleClose, data}) => {
+    const {id, name, position, availibility_status : as_data, availibility_percentage: ap_data, price_current : pc_data, club, logo_url, player_club} = data
+
+    const [availibility_percentage, setAvailibityPercentage] = useState('');
+    const [availibility, setAvailibity] = useState('');
+    const [price, setPrice] = useState('');
+
+    return (<>
+        <DialogContent>
+        {name} - {club} ({position})
+        <Box component='form' sx={{mt: 3, width: '100%'}} onSubmit={ e=> {
+            e.preventDefault()
+        }}>
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+
+            <TextField variant='outlined' type={'text'} label='Availibility' margin='normal' size='small'
+            value={availibility} onChange={e=>{setAvailibity(e.target.value)}} />
+
+            <TextField variant='outlined' type={'number'} label='Availibility Percentage' margin='normal' size='small'
+            value={availibility_percentage} onChange={e=>{setAvailibityPercentage(e.target.value)}} />
+
+            <Button variant='contained' disabled={false}>Update</Button>
+
+            </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+
+            <IconButton>
+                <ArrowBackIos />
+            </IconButton>
+
+            <TextField type={'number'} variant='outlined' label='Price' sx={{display: 'block', mt: 2, flexGrow: '1'}} margin="normal" size='small'
+            value={price} onChange={e=>{setPrice(e.target.value)}} />
+
+            <IconButton>
+                <ArrowForwardIos />
+            </IconButton>
+
+            </Box>
+            
+        </Box>
+        </DialogContent>
+    </>)
+}
+
 const AddPlayerDialog = ({handleClose}) => {
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
+    const [availibility_percentage, setAvailibityPercentage] = useState('');
+    const [availibility, setAvailibity] = useState('');
+    const [position, setPosition] = useState('GKP');
+    const possiblePosition = ['GKP', 'DEF', 'MID', 'FWD']
     const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
-    const [favouriteClub, setFavouriteClub] = useState('');
+    const [price, setPrice] = useState('');
+    const [club, setClub] = useState('');
     const [allClub, setAllClub] = useState([]);
 
     useEffect( () => {
@@ -139,22 +193,32 @@ const AddPlayerDialog = ({handleClose}) => {
             e.preventDefault()
         }}>
 
-            <TextField variant='outlined' type={'text'} label='Email' sx={{display: 'block'}} margin='normal' size='small' fullWidth
-            value={email} onChange={e=>{setEmail(e.target.value)}} />
-
-            <TextField variant='outlined' type={'text'} label='Username' sx={{display: 'block', mb: 4}} margin='normal' size='small' fullWidth
-            value={username} onChange={e=>{setUsername(e.target.value)}} />
-            
             <TextField variant='outlined' type={'text'} label='Name' sx={{display: 'block'}} margin='normal' size='small' fullWidth
             value={name} onChange={e=>{setName(e.target.value)}} />
 
-            <FormControl sx={{mt: 2, mb: 4}} size="small" fullWidth>
-                <InputLabel id='fav-club-label'>Favourite Club</InputLabel>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4, mb: 2}}>
+
+            <FormControl size="small" sx={{width: '100px'}}>
+                <InputLabel id='pos-label'>Player Position</InputLabel>
+
+                <Select labelId="pos-label"
+                    value={position}
+                    label='Player Position'
+                    onChange={ e => { e.target.value && setPosition(e.target.value)}}
+                >
+                    {possiblePosition.map( v => (
+                        <MenuItem value={v} key={v}>{v}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+
+            <FormControl size="small" sx={{width: '400px'}}>
+                <InputLabel id='fav-club-label'>Player Club</InputLabel>
 
                 <Select labelId="fav-club-label"
-                    value={favouriteClub}
-                    label='Favourite Club'
-                    onChange={ e => { e.target.value && setFavouriteClub(e.target.value)}}
+                    value={club}
+                    label='Player Club'
+                    onChange={ e => { e.target.value && setClub(e.target.value)}}
                 >
                     <MenuItem value=''>Select</MenuItem>
                     {allClub.map( v => (
@@ -163,15 +227,28 @@ const AddPlayerDialog = ({handleClose}) => {
                 </Select>
             </FormControl>
 
-            <TextField type={'password'} variant='outlined' label='Password' sx={{display: 'block'}} margin="normal" size='small' fullWidth
-            value={password} onChange={e=>{setPassword(e.target.value)}} />
+            </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+                
+            <TextField variant='outlined' type={'text'} label='Availibility' margin='normal' size='small'
+            value={availibility} onChange={e=>{setAvailibity(e.target.value)}} />
+
+            <TextField variant='outlined' type={'number'} label='Availibility Percentage' margin='normal' size='small'
+            value={availibility_percentage} onChange={e=>{setAvailibityPercentage(e.target.value)}} />
+
+            
+            <TextField type={'number'} variant='outlined' label='Price' sx={{display: 'block', mt: 2}} margin="normal" size='small'
+            value={price} onChange={e=>{setPrice(e.target.value)}} />
+            
+            </Box>
 
         </Box>
         </DialogContent>
 
         <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose}>Create Scout Account</Button>
+            <Button onClick={handleClose}>Create a Player</Button>
         </DialogActions>
     </>)
 }

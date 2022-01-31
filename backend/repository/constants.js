@@ -35,6 +35,8 @@ module.exports = {
     TABLE_BLOG_COVER_IMAGE_URL: `"cover_image_url"`,
     TABLE_BLOG_CONTENT: `"content"`,
     
+    VIEW_PLAYER_LIST: `${DB_NAME}."player_list_view"`,
+
     USER_TYPE_SCOUT: 'SCOUT',
     USER_TYPE_ADMIN: 'ADMIN',
     USER_TYPE_USER: 'USER',
