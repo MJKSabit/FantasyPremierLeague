@@ -3,13 +3,14 @@ import { Button, Card, CardActions, CardContent, Chip, Dialog, DialogActions, Di
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react"
 import {Link as RouterLink } from 'react-router-dom';
-import { getAllClubs } from "../../api";
+import { getAllClubs, getClubPlayers } from "../../api";
+import GppGoodIcon from '@mui/icons-material/GppGood';
 
 const PlayerManagement = () => {
 
     const [page, setPage] = useState(1)
     const [query, setQuery] = useState('')
-    const [players, setPlayers] = useState([{id: 1989, name: "Lacazette", position: 'FWD', availibility: 'Available', availibility_percentage: 100, price_current: 8.4, club: 'ARS'}])
+    const [players, setPlayers] = useState([])
 
     const [allClub, setAllClub] = useState([]);
     const [playerClub, setUserClub] = useState('');
@@ -21,6 +22,15 @@ const PlayerManagement = () => {
             console.log(err);
         })
     }, [])
+
+    useEffect( () => {
+        getClubPlayers(playerClub).then(data => {
+            setPlayers(data)
+            console.log(data);
+        }).catch(err => {
+            console.log(err.response);
+        })
+    }, [playerClub])
     
     const [dialogOpen, setDialogOpen] = useState(false)
     const closeDialog = () => {setDialogOpen(false)}
@@ -62,7 +72,7 @@ const PlayerManagement = () => {
             </Grid>
         </Grid>
 
-        <Grid container justifyContent="flex-start" alignItems="center" sx={{mt: 4}}>
+        <Grid container justifyContent="flex-start" alignItems="center" sx={{mt: 4}} spacing={2}>
             {players.map(value => <PlayerCard data={value} />)}
         </Grid>
     </>)
@@ -72,19 +82,27 @@ const PlayerCard = ({data}) => {
     if (!data)
         return null
     
-    const {id, name, position, availibility, availibility_percentage, price_current, club, club_logo} = data
+    const {id, name, position, availibility_status, availibility_percentage, price_current, club, logo_url, player_club} = data
     
     return <Grid item xs={6}>
         <Card sx={{width: '100%'}} >
             <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                    {name} 
-                <Chip label={`${position}`} sx={{mx: 2}}/>
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {club} <br />
-                    {availibility} ({availibility_percentage}%) - {price_current}
-                </Typography>
+                <Grid container>
+                    <Grid xs={9} item>
+                        <Typography gutterBottom variant="h5" component="div">
+                            {name} 
+                        <Chip label={`${position}`} sx={{mx: 2}}/>
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {player_club} <br />
+                            {availibility_status} ({availibility_percentage}%)  <br />
+                            ${Math.round(price_current*10)/10}
+                        </Typography>
+                    </Grid>
+                    <Grid xs={3} item>
+                        <img src={logo_url} style={{width: '100%', height: 'auto'}} alt={club} />
+                    </Grid>
+                </Grid>
             </CardContent>
             <CardActions>
                 <Button size="small" variant='text' color="success">

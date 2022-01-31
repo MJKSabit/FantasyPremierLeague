@@ -1,8 +1,9 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system"
+import { useSnackbar } from "material-ui-snackbar-provider";
 import { useEffect, useState } from "react";
-import { Link, Link as RouterLink } from 'react-router-dom';
-import { getAllClubs } from "../../api";
+import { Link, Link as RouterLink, useNavigate } from 'react-router-dom';
+import { getAllClubs, register } from "../../api";
 
 
 const RegisterPage = () => {
@@ -14,6 +15,9 @@ const RegisterPage = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [favouriteClub, setFavouriteClub] = useState('');
     const [allClub, setAllClub] = useState([]);
+
+    const snackbar = useSnackbar()
+    const navigate = useNavigate()
 
     useEffect( () => {
         getAllClubs().then( data => {
@@ -30,6 +34,12 @@ const RegisterPage = () => {
 
         <Box component='form' sx={{mt: 3, width: '60%'}} onSubmit={ e=> {
             e.preventDefault()
+            register(username, name, email, password, favouriteClub).then(data => {
+                snackbar.showMessage(`User created with ${data.username}`)
+            }).catch( err => {
+                console.log(err.response)
+                snackbar.showMessage(err.response.data.info)
+            })
         }}>
 
             <TextField variant='outlined' type={'text'} label='Email' sx={{display: 'block'}} margin='normal' size='small' fullWidth

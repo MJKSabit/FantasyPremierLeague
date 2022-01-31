@@ -1,4 +1,5 @@
 const blog = require('../repository/blog')
+const player = require('../repository/player')
 const { OK, NOT_FOUND, errorInfo } = require('./HttpStatus')
 
 const getAllBlogs = async (req, res) => {
@@ -18,7 +19,14 @@ const getBlog = async (req, res) => {
     res.status(OK).json(result[0])
 }
 
+const getClubPlayer = async (req, res) => {
+    const club = req.params.club
+    const result = await player.getAllPlayers(club)
+    res.status(OK).json(result)
+}
+
 module.exports = {
     getAllBlogs,
-    getBlog
+    getBlog,
+    getClubPlayer
 }

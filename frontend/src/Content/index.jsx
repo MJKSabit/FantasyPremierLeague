@@ -39,7 +39,7 @@ const CenterContent = () => (
                     </Route>
                     <Route path='scout'>
                         <Route path='create' element={<CreateBlog />} />
-                        <Route path='my' element={<BlogList disableLoading={true} getBlogs={getScoutBlog}/>} />
+                        <Route path='my' element={<BlogList disableLoading={true} getBlogs={getScoutBlog} heading={'My Blogs'}/>} />
                     </Route>
                     <Route path='settings' element={<div>Change Password</div>} />
                 </Routes>

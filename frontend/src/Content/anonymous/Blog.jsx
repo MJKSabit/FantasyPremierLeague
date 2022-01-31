@@ -22,7 +22,7 @@ export const Blog = () => {
     
     return (<>
         <div className='container' style={{marginBottom: '20px'}}>
-            <img src={blog.cover_image_url} style={{width: '100%'}} alt='Blog Img'/>
+            <img src={blog.cover_image_url} style={{maxHeight: '300px'}} alt='Blog Img'/>
             <div className="content">
             <Typography variant="h4">
                 {blog.title}
@@ -57,10 +57,10 @@ const BlogCard = ({blog}) => {
     </Card>
 )}
 
-const BlogList = ({disableLoading, getBlogs}) => {
+const BlogList = ({getBlogs, heading}) => {
 
     getBlogs = getBlogs || getAllBlogs
-    disableLoading = disableLoading || false
+    const disableLoading = false
 
     const [blogs, setBlogs] = useState([])
     const [page, setPage] = useState(1)
@@ -84,7 +84,7 @@ const BlogList = ({disableLoading, getBlogs}) => {
 
     return (<>
         <Typography variant="h6">
-            Learn from the exparts. Latest Blogs from our <Box sx={{ fontWeight: '700'}} component='span'>scouts</Box>.
+            { heading || `Learn from the exparts. Latest Blogs from our scouts`}.
         </Typography>
 
         <Grid container spacing={4} sx={{mt: 2}} >

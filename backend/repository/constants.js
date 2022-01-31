@@ -2,9 +2,9 @@ const DB_NAME = `"C##FPL"`
 
 module.exports = {
     TABLE_CLUB: `${DB_NAME}."club"`,
-    TABLE_CLUB_SHORT_NAME: `short_name`,
-    TABLE_CLUB_NAME: `name`,
-    TABLE_CLUB_LOGO_URL: `logo_url`,
+    TABLE_CLUB_SHORT_NAME: `"short_name"`,
+    TABLE_CLUB_NAME: `"name"`,
+    TABLE_CLUB_LOGO_URL: `"logo_url"`,
 
     TABLE_USER: `${DB_NAME}."user"`,
     TABLE_USER_USERNAME: `"username"`,

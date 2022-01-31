@@ -46,6 +46,14 @@ export const createBlog = async (postData) => {
     return (await axios.post(`${API_URL}/scout/blog`, postData)).data
 }
 
+export const register = async (username, name, email, password, favourite_club) => {
+    return (await axios.post(`${API_URL}/public/auth/register`, {username, name, email, password, favourite_club})).data
+}
+
+export const getClubPlayers = async (club_short) => {
+    return (await axios.get(`${API_URL}/public/club/player/${club_short}`)).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))
