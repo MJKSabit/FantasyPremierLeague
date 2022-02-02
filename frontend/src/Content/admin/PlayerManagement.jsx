@@ -6,9 +6,6 @@ import { useEffect, useState } from "react"
 import { addPlayer, deletPlayer, editPlayer, getAllClubs, getClubPlayers } from "../../api";
 
 const PlayerManagement = () => {
-
-    const [page, setPage] = useState(1)
-    const [query, setQuery] = useState('')
     const [players, setPlayers] = useState([])
 
     const [allClub, setAllClub] = useState([]);
@@ -49,7 +46,7 @@ const PlayerManagement = () => {
                     <AddPlayerDialog handleClose={closeDialog} />
                 </Dialog>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={6}>
             <FormControl size="small" fullWidth>
                 <InputLabel id='club-label'>Club</InputLabel>
 
@@ -64,11 +61,6 @@ const PlayerManagement = () => {
                     ))}
                 </Select>
             </FormControl>
-            </Grid>
-            <Grid item xs={1}>
-                <IconButton fullWidth onClick={e => {console.log(query);}}>
-                    <Search />
-                </IconButton>
             </Grid>
         </Grid>
 

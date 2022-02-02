@@ -66,6 +66,14 @@ export const deletPlayer = async (id) => {
     return (await axios.delete(`${API_URL}/admin/player/${id}`)).data
 }
 
+export const getGW = async () => {
+    return (await axios.get(`${API_URL}/admin/gw`)).data
+}
+
+export const setGW = async (id, deadline) => {
+    return (await axios.post(`${API_URL}/admin/gw`, {id, deadline})).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

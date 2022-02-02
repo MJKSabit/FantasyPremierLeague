@@ -27,13 +27,17 @@ module.exports = {
     TABLE_PLAYER_PRICE_CHANGED: `"price_last_changed"`,
     TABLE_PLAYER_PRICE_CHANGE_AMOUNT: `"price_change_amount"`,
 
-    TABLE_BLOG: `"C##FPL"."blog"`,
+    TABLE_BLOG: `${DB_NAME}."blog"`,
     TABLE_BLOG_ID: `"id"`,
     TABLE_BLOG_WRITER: `"writer"`,
     TABLE_BLOG_PUBLICATION_DATE: `"publication_date"`,
     TABLE_BLOG_TITLE: `"title"`,
     TABLE_BLOG_COVER_IMAGE_URL: `"cover_image_url"`,
     TABLE_BLOG_CONTENT: `"content"`,
+
+    TABLE_GW: `${DB_NAME}."gw"`,
+    TABLE_GW_ID: `"id"`,
+    TABLE_GW_DEADLINE: `"deadline"`,
     
     VIEW_PLAYER_LIST: `${DB_NAME}."player_list_view"`,
 

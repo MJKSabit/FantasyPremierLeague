@@ -2,6 +2,7 @@ const bcryptjs = require('bcryptjs')
 const { USER_TYPE_SCOUT } = require('../repository/constants')
 const user = require('../repository/user')
 const player = require('../repository/player')
+const gw = require('../repository/gw')
 const { validateEmail, validateUsername } = require('../util/validation')
 const { OK, BAD_REQUEST, errorInfo, ACCEPTED, SERVICE_UNAVAILABLE, CREATED, INTERNAL_SERVER_ERROR } = require('./HttpStatus')
 
@@ -70,4 +71,14 @@ const addPlayer = async (req, res) => {
     res.status(CREATED).json({status: await player.addPlayer(name, club, position, ava_stat, ava_percentage, price)})
 }
 
-module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer}
+const getGW = async (req, res) => {
+    res.status(OK).json(await gw.getGW())
+}
+
+const setGW = async (req, res) => {
+    const {id, deadline} = req.body
+    await gw.setGW(id, deadline)
+    await getGW(req, res)
+}
+
+module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW}
