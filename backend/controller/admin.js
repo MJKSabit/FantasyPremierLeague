@@ -62,11 +62,12 @@ const editPlayer = async (req, res) => {
 
 const deletePlayer = async (req, res) => {
     const id = Number.parseInt(req.params.id)
-    res.status(OK).json({status: 'deleted'})
+    res.status(OK).json({status: await player.deletePlayer(id)})
 }
 
 const addPlayer = async (req, res) => {
-    res.status(CREATED).json({status: 'created '})
+    const {name, club, position, ava_stat, ava_percentage, price} = req.body
+    res.status(CREATED).json({status: await player.addPlayer(name, club, position, ava_stat, ava_percentage, price)})
 }
 
 module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer}

@@ -58,6 +58,14 @@ export const editPlayer = async (id, availibility_percentage, availibility, pric
     return (await axios.put(`${API_URL}/admin/player/${id}`, {availibility_percentage, availibility, price})).data
 }
 
+export const addPlayer = async (name, club, position, ava_stat, ava_percentage, price) => {
+    return (await axios.post(`${API_URL}/admin/player`, {name, club, position, ava_stat, ava_percentage, price})).data
+}
+
+export const deletPlayer = async (id) => {
+    return (await axios.delete(`${API_URL}/admin/player/${id}`)).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

@@ -1,5 +1,5 @@
 const { getConnection } = require("oracledb")
-const { TABLE_PLAYER_CLUB, VIEW_PLAYER_LIST, TABLE_PLAYER, TABLE_PLAYER_PRICE_CURRENT, TABLE_PLAYER_AVAILIBILITY_STATUS, TABLE_PLAYER_AVAILIBILITY_PERCENTAGE, TABLE_PLAYER_ID } = require("./constants")
+const { TABLE_PLAYER_CLUB, VIEW_PLAYER_LIST, TABLE_PLAYER, TABLE_PLAYER_PRICE_CURRENT, TABLE_PLAYER_AVAILIBILITY_STATUS, TABLE_PLAYER_AVAILIBILITY_PERCENTAGE, TABLE_PLAYER_ID, TABLE_PLAYER_NAME, TABLE_PLAYER_POSITION, TABLE_PLAYER_AVAILIBILITY_CHANGED, TABLE_PLAYER_PRICE_CHANGED, TABLE_PLAYER_PRICE_CHANGE_AMOUNT } = require("./constants")
 
 const GET_ALL_PLAYER_OF_CLUB = `SELECT * FROM ${VIEW_PLAYER_LIST} WHERE ${TABLE_PLAYER_CLUB} = :1`
 
@@ -20,8 +20,23 @@ const editPlayer = async (id, availibility, availibility_percentage, price) => {
     return result.rowsAffected === 1
 }
 
-const deletePlayer = async (id) => {
+const DELETE_PLAYER = `DELETE FROM ${TABLE_PLAYER} WHERE ${TABLE_PLAYER_ID} = :1`
 
+const deletePlayer = async (id) => {
+    const connection = await getConnection()
+    const result = await connection.execute(DELETE_PLAYER, [id])
+    connection.release()
+    return result.rowsAffected === 1
 }
 
-module.exports = {getAllPlayers, editPlayer}
+
+const ADD_PLAYER = `INSERT INTO ${TABLE_PLAYER}(${TABLE_PLAYER_NAME}, ${TABLE_PLAYER_CLUB}, ${TABLE_PLAYER_POSITION}, ${TABLE_PLAYER_AVAILIBILITY_STATUS}, ${TABLE_PLAYER_AVAILIBILITY_PERCENTAGE}, ${TABLE_PLAYER_PRICE_CURRENT}, ${TABLE_PLAYER_AVAILIBILITY_CHANGED}, ${TABLE_PLAYER_PRICE_CHANGED}, ${TABLE_PLAYER_PRICE_CHANGE_AMOUNT}) VALUES (:1, :2, :3, :4, :5, :6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, .0)`
+
+const addPlayer = async (name, club, position, ava_stat, ava_percentage, price) => {
+    const connection = await getConnection()
+    const result = await connection.execute(ADD_PLAYER, [name, club, position, ava_stat, ava_percentage, price])
+    connection.release()
+    return result.rowsAffected === 1
+}
+
+module.exports = {getAllPlayers, editPlayer, deletePlayer, addPlayer}

@@ -1,8 +1,9 @@
 import { ArrowBackIos, ArrowForwardIos, Search } from "@mui/icons-material"
 import { Button, Card, CardActions, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, IconButton, Input, InputLabel, Link, MenuItem, Select, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system";
+import { useSnackbar } from "material-ui-snackbar-provider";
 import { useEffect, useState } from "react"
-import { editPlayer, getAllClubs, getClubPlayers } from "../../api";
+import { addPlayer, deletPlayer, editPlayer, getAllClubs, getClubPlayers } from "../../api";
 
 const PlayerManagement = () => {
 
@@ -24,7 +25,6 @@ const PlayerManagement = () => {
     const getClubPlayer = () => {
         getClubPlayers(playerClub).then(data => {
             setPlayers(data)
-            console.log(data);
         }).catch(err => {
             console.log(err.response);
         })
@@ -85,7 +85,7 @@ const PlayerCard = ({data}) => {
     
     const closeDialog = () => {setEditOpen(false)}
 
-    
+    const snackbar = useSnackbar()    
     
     return <Grid item xs={6}>
         <Card sx={{width: '100%'}} >
@@ -111,7 +111,14 @@ const PlayerCard = ({data}) => {
                 <Button size="small" variant='text' color="success" onClick={ () => {setEditOpen(true)}}>
                     Edit
                 </Button>
-                <Button size="small" variant='text' color="error">
+                <Button size="small" variant='text' color="error" onClick={ () => {
+                    deletPlayer(id).then(d => {
+                        closeDialog()
+                        snackbar.showMessage('Delete successful!')
+                    }).catch( err => {
+                        snackbar.showMessage('Error deleting...')
+                    })
+                }}>
                     Remove
                 </Button>
             </CardActions>
@@ -168,12 +175,12 @@ const EditPlayerDialog = ({handleClose, data, setStatus}) => {
 }
 
 const AddPlayerDialog = ({handleClose}) => {
-    const [availibility_percentage, setAvailibityPercentage] = useState('');
-    const [availibility, setAvailibity] = useState('');
+    const [availibility_percentage, setAvailibityPercentage] = useState(100);
+    const [availibility, setAvailibity] = useState('Available');
     const [position, setPosition] = useState('GKP');
     const possiblePosition = ['GKP', 'DEF', 'MID', 'FWD']
     const [name, setName] = useState('');
-    const [price, setPrice] = useState('');
+    const [price, setPrice] = useState(5.0);
     const [club, setClub] = useState('');
     const [allClub, setAllClub] = useState([]);
 
@@ -234,11 +241,11 @@ const AddPlayerDialog = ({handleClose}) => {
             value={availibility} onChange={e=>{setAvailibity(e.target.value)}} />
 
             <TextField variant='outlined' type={'number'} label='Availibility Percentage' margin='normal' size='small'
-            value={availibility_percentage} onChange={e=>{setAvailibityPercentage(e.target.value)}} />
+            value={availibility_percentage} onChange={e=>{setAvailibityPercentage(Number.parseInt(e.target.value))}} />
 
             
             <TextField type={'number'} variant='outlined' label='Price' sx={{display: 'block', mt: 2}} margin="normal" size='small'
-            value={price} onChange={e=>{setPrice(e.target.value)}} />
+            value={price} onChange={e=>{setPrice(Number.parseFloat(e.target.value))}} />
             
             </Box>
 
@@ -247,7 +254,13 @@ const AddPlayerDialog = ({handleClose}) => {
 
         <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose}>Create a Player</Button>
+            <Button onClick={() => {
+                addPlayer(name, club, position, availibility, availibility_percentage, price).then(d => {
+                    handleClose()
+                }).catch(err => {
+                    console.log(err)
+                })
+            }} variant="contained">Create a Player</Button>
         </DialogActions>
     </>)
 }
