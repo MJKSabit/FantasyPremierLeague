@@ -2,7 +2,7 @@ import { ArrowBackIos, ArrowForwardIos, Search } from "@mui/icons-material"
 import { Button, Card, CardActions, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, IconButton, Input, InputLabel, Link, MenuItem, Select, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react"
-import { getAllClubs, getClubPlayers } from "../../api";
+import { editPlayer, getAllClubs, getClubPlayers } from "../../api";
 
 const PlayerManagement = () => {
 
@@ -21,14 +21,16 @@ const PlayerManagement = () => {
         })
     }, [])
 
-    useEffect( () => {
+    const getClubPlayer = () => {
         getClubPlayers(playerClub).then(data => {
             setPlayers(data)
             console.log(data);
         }).catch(err => {
             console.log(err.response);
         })
-    }, [playerClub])
+    }
+
+    useEffect( getClubPlayer, [playerClub])
     
     const [dialogOpen, setDialogOpen] = useState(false)
     const closeDialog = () => {setDialogOpen(false)}
@@ -78,13 +80,12 @@ const PlayerManagement = () => {
 
 const PlayerCard = ({data}) => {
     const [editOpen, setEditOpen] = useState(false);
-
-    if (!data)
-        return null
+    const {id, name, position, availibility_status, availibility_percentage, price_current, club, logo_url, player_club} = data
+    const [state, setState] = useState({availibility_status, availibility_percentage, price_current})
     
     const closeDialog = () => {setEditOpen(false)}
+
     
-    const {id, name, position, availibility_status, availibility_percentage, price_current, club, logo_url, player_club} = data
     
     return <Grid item xs={6}>
         <Card sx={{width: '100%'}} >
@@ -97,8 +98,8 @@ const PlayerCard = ({data}) => {
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             {player_club} <br />
-                            {availibility_status} (<Box sx={{ fontWeight: '700'}} component='span'>{availibility_percentage}%</Box>)  <br />
-                            ${Math.round(price_current*10)/10}
+                            {state.availibility_status} (<Box sx={{ fontWeight: '700'}} component='span'>{state.availibility_percentage}%</Box>)  <br />
+                            ${Math.round(state.price_current*10)/10}
                         </Typography>
                     </Grid>
                     <Grid xs={3} item>
@@ -117,17 +118,17 @@ const PlayerCard = ({data}) => {
         </Card>
         <Dialog open={editOpen} onClose={closeDialog} fullWidth='true'>
             <DialogTitle>Edit Player Status</DialogTitle>
-            <EditPlayerDialog handleClose={closeDialog} data={data} />
+            <EditPlayerDialog handleClose={closeDialog} data={data} setStatus={setState} />
         </Dialog>
     </Grid>
 } 
 
-const EditPlayerDialog = ({handleClose, data}) => {
+const EditPlayerDialog = ({handleClose, data, setStatus}) => {
     const {id, name, position, availibility_status : as_data, availibility_percentage: ap_data, price_current : pc_data, club, logo_url, player_club} = data
 
-    const [availibility_percentage, setAvailibityPercentage] = useState('');
-    const [availibility, setAvailibity] = useState('');
-    const [price, setPrice] = useState('');
+    const [availibility_percentage, setAvailibityPercentage] = useState(ap_data);
+    const [availibility, setAvailibity] = useState(as_data);
+    const [price, setPrice] = useState(pc_data);
 
     return (<>
         <DialogContent>
@@ -142,29 +143,27 @@ const EditPlayerDialog = ({handleClose, data}) => {
             value={availibility} onChange={e=>{setAvailibity(e.target.value)}} />
 
             <TextField variant='outlined' type={'number'} label='Availibility Percentage' margin='normal' size='small'
-            value={availibility_percentage} onChange={e=>{setAvailibityPercentage(e.target.value)}} />
-
-            <Button variant='contained' disabled={false}>Update</Button>
+            value={availibility_percentage} onChange={e=>{setAvailibityPercentage(Number.parseInt(e.target.value))}} />
 
             </Box>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
 
-            <IconButton>
-                <ArrowBackIos />
-            </IconButton>
+            <TextField type={'number'} variant='outlined' label='Price' sx={{display: 'block', mt: 2, flexGrow: '1'}} margin="normal" size='small' fullWidth
+            value={price} onChange={e=>{setPrice(Number.parseFloat(e.target.value))}} />
 
-            <TextField type={'number'} variant='outlined' label='Price' sx={{display: 'block', mt: 2, flexGrow: '1'}} margin="normal" size='small'
-            value={price} onChange={e=>{setPrice(e.target.value)}} />
-
-            <IconButton>
-                <ArrowForwardIos />
-            </IconButton>
-
-            </Box>
-            
         </Box>
         </DialogContent>
+        <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="contained" onClick={() => {
+                editPlayer(id, availibility_percentage, availibility, price).then(d => {
+                    handleClose()
+                    setStatus({availibility_status: availibility, availibility_percentage, price_current: price})
+                }).catch( err => {
+                    console.log(err)
+                })
+            }}>Update</Button>
+        </DialogActions>
     </>)
 }
 

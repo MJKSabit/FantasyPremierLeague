@@ -9,4 +9,8 @@ router.post('/user/:username', controller.disableUserStat)
 
 router.post('/addscout', controller.createScout)
 
+router.put('/player/:id', controller.editPlayer)
+router.delete('/player/:id', controller.deletePlayer)
+router.post('/player', controller.addPlayer)
+
 module.exports = router;

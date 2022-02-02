@@ -54,6 +54,10 @@ export const getClubPlayers = async (club_short) => {
     return (await axios.get(`${API_URL}/public/club/player/${club_short}`)).data
 }
 
+export const editPlayer = async (id, availibility_percentage, availibility, price) => {
+    return (await axios.put(`${API_URL}/admin/player/${id}`, {availibility_percentage, availibility, price})).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

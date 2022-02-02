@@ -1,3 +1,5 @@
+# Tables
+
 user(<u>username</u>, name, email, hashed_password, favourite_club, type)
 
 ```sql
@@ -258,4 +260,48 @@ CREATE TABLE "C##FPL"."fixture_stats" (
     FOREIGN KEY ("player_id") REFERENCES "player"("id") 
     ON DELETE CASCADE
 );
+```
+
+
+
+# Views
+
+player_list_view
+
+```sql
+CREATE OR REPLACE 
+  VIEW "player_list_view" AS 
+  SELECT 
+    P."id", P."name", P."position", P."club", 
+    C."name" "club_name", P."price_current", 
+    P."availibility_status", P."availibility_percentage", 
+    C."logo_url" 
+  FROM "C##FPL"."player" P 
+  JOIN "C##FPL"."club" C 
+  ON (P."club" = C."short_name") 
+WITH READ ONLY;
+```
+
+
+
+# Triggers
+
+```sql
+CREATE OR REPLACE TRIGGER "last_update_trigger" 
+	BEFORE UPDATE ON "player"
+	FOR EACH ROW 
+DECLARE
+BEGIN
+	
+	IF :NEW."availibility_status" != :OLD."availibility_status" OR 
+		:NEW."availibility_percentage" != :OLD."availibility_percentage" THEN
+		:NEW."availibility_last_changed" := CURRENT_TIMESTAMP;
+	END IF;
+	
+	IF :NEW."price_current" != :OLD."price_current" THEN
+			:NEW."price_last_changed" := CURRENT_TIMESTAMP;
+			:NEW."price_change_amount" := :NEW."price_current" - :OLD."price_current";
+	END IF;
+	
+END;
 ```
