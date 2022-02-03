@@ -1,8 +1,9 @@
 import { Button, Grid, TextField, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Select, MenuItem } from "@mui/material"
 import ReactJson from "react-json-view"
 import { useEffect, useState } from "react"
-import { getFixtureOfGW, getPlayersOfFixture, getSettingsAPI, setFixtureResultAPI, setSettingsAPI } from "../../api"
+import { getFixtureOfGW, getPlayersOfFixture, getSettingsAPI, setFixtureResultAPI, setSettingsAPI, setStat } from "../../api"
 import { ArrowRightAlt, Refresh, Upload } from "@mui/icons-material"
+import { useSnackbar } from "material-ui-snackbar-provider"
 
 
 const GWManagement = () => {
@@ -119,7 +120,7 @@ const PlayerPointSet = ({fixtureId}) => {
     const [sv, setSv] = useState(0)
     const [bp, setBp] = useState(0)
 
-    const total_points = (mp >= 60 ? 2 : (mp > 0 ? 1 : 0)) + gs * 5 + gc*-0.5 + at*3 + og*-2 + pm*-2 + yc*-1 + rc*-3 + sv*0.5 + bp;
+    const total_points = (mp >= 60 ? 2 : (mp > 0 ? 1 : 0)) + gs * 5 + Math.floor(gc*-0.5) + at*3 + og*-2 + ps*5 + pm*-2 + yc*-1 + rc*-3 + Math.floor(sv*0.34) + bp;
 
     useEffect(() => {
         getPlayersOfFixture(fixtureId).then(d => {
@@ -137,52 +138,63 @@ const PlayerPointSet = ({fixtureId}) => {
             ))}
         </Select>
 
+    const snackbar = useSnackbar()
+
     const points_updater = <>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='MP' value={mp} onChange={e => {setMp(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='GS' value={gs} onChange={e => {setGs(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='Assist' value={at} onChange={e => {setAt(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='GC' value={gc} onChange={e => {setGc(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='OG' value={og} onChange={e => {setOg(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='PS' value={ps} onChange={e => {setPs(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='PM' value={pm} onChange={e => {setPm(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='YC' value={yc} onChange={e => {setYc(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
-            <TextField type='number' variant='standard' size="small" label='PS' value={rc} onChange={e => {setRc(Number.parseInt(e.target.value))}}
+        <Grid item xs={1}>
+            <TextField type='number' variant='standard' size="small" label='RC' value={rc} onChange={e => {setRc(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='Save' value={sv} onChange={e => {setSv(Number.parseInt(e.target.value))}}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
             <TextField type='number' variant='standard' size="small" label='Bonus' value={bp} onChange={e => {setBp(Number.parseInt(e.target.value))}} />
         </Grid>
+        <Grid item xs={1}>
+            <TextField type='number' variant='standard' size="small" label='Points' value={total_points} />
+        </Grid>
         <Grid item xs={4}>
-            <TextField type='number' variant='standard' size="small" label='Total Points' value={total_points} />
+            <Button variant='outlined' size='small' fullWidth onClick={ () => {
+                setStat(fixtureId, playerId, total_points, mp, gs, gc, at, og, ps, pm, yc, rc, sv, bp).then(d=>{
+                    snackbar.showMessage('Updated Successfully!')
+                }).catch(console.log)
+            }}>
+                Update Data
+            </Button>
         </Grid>
     </>
 

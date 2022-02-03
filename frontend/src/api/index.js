@@ -102,6 +102,10 @@ export const setFixtureResultAPI = async (fId, result) => {
     return (await axios.post(`${API_URL}/admin/result/${fId}`, {result})).data
 }
 
+export const setStat = async (fixture_id, player_id, pts, mp, gs, gc, at, og, ps, pm, yc, rc, sv, bp) => {
+    return (await axios.post(`${API_URL}/admin/stat`, {fixture_id, player_id, pts, mp, gs, gc, at, og, ps, pm, yc, rc, sv, bp})).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

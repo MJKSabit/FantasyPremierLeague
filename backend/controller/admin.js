@@ -7,6 +7,7 @@ const fixture = require('../repository/fixture')
 const settings = require('../repository/settings')
 const { validateEmail, validateUsername } = require('../util/validation')
 const { OK, BAD_REQUEST, errorInfo, ACCEPTED, SERVICE_UNAVAILABLE, CREATED, INTERNAL_SERVER_ERROR } = require('./HttpStatus')
+const { updateStatistics } = require('../repository/fixture_stat')
 
 const getUser = async (req, res) => {
     const q = req.query.q || ''
@@ -108,4 +109,11 @@ const setFixtureResult = async (req, res) => {
     res.status(OK).json({'info': 'Set successful'})
 }
 
-module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW, getMatchGW, setMatchGW, setSettings, setFixtureResult}
+const setStats = async (req, res) => {
+    const {fixture_id, player_id, pts, mp, gs, gc, at, og, ps, pm, yc, rc, sv, bp} = req.body
+    await updateStatistics(fixture_id, player_id, pts, mp, gs, gc, at, og, ps, pm, yc, rc, sv, bp)
+    res.status(OK).json({'info': 'Set successful'})
+}
+
+
+module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW, getMatchGW, setMatchGW, setSettings, setFixtureResult, setStats}
