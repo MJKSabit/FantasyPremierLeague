@@ -90,6 +90,18 @@ export const setMatchGW = async (gw, home, away) => {
     return (await axios.post(`${API_URL}/admin/match`, {gw, home, away})).data
 }
 
+export const getFixtureOfGW = async (gw) => {
+    return (await axios.get(`${API_URL}/public/fixture/${gw}`)).data
+}
+
+export const getPlayersOfFixture = async (fId) => {
+    return (await axios.get(`${API_URL}/public/player/${fId}`)).data
+}
+
+export const setFixtureResultAPI = async (fId, result) => {
+    return (await axios.post(`${API_URL}/admin/result/${fId}`, {result})).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

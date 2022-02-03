@@ -17,4 +17,7 @@ router.get('/club/player/:club', public.getClubPlayer)
 
 router.get('/settings', public.getSettings)
 
+router.get('/fixture/:gwId', public.getFixture)
+router.get('/player/:fId', public.fixturePlayer)
+
 module.exports = router

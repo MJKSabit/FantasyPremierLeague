@@ -101,4 +101,11 @@ const setSettings = async (req, res) => {
     res.status(OK).json(await settings.setSettings(settings_data))
 }
 
-module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW, getMatchGW, setMatchGW, setSettings}
+const setFixtureResult = async (req, res) => {
+    let fId = Number.parseInt(req.params.fId)
+    const {result} = req.body
+    await fixture.setResult(fId, result)
+    res.status(OK).json({'info': 'Set successful'})
+}
+
+module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW, getMatchGW, setMatchGW, setSettings, setFixtureResult}

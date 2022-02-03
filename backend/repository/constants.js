@@ -44,6 +44,7 @@ module.exports = {
     TABLE_FIXTURE_GW_ID: `"gw_id"`,
     TABLE_FIXTURE_HOME_CLUB: `"home_club"`,
     TABLE_FIXTURE_AWAY_CLUB: `"away_club"`,
+    TABLE_FIXTURE_RESULT: `"result"`,
 
     TABLE_SETTINGS: `${DB_NAME}."settings"`,
     TABLE_SETTINGS_KEY: `"key"`,
@@ -54,6 +55,8 @@ module.exports = {
     SETTING_TYPE_POINT_STATUS: `POINT_STATUS`,
     
     VIEW_PLAYER_LIST: `${DB_NAME}."player_list_view"`,
+    VIEW_FIXTURE_LIST: `${DB_NAME}."fixture_list"`,
+    VIEW_FIXTURE_PLAYER_LIST: `${DB_NAME}."fixture_player_list_view"`,
 
     USER_TYPE_SCOUT: 'SCOUT',
     USER_TYPE_ADMIN: 'ADMIN',

@@ -1,4 +1,5 @@
 const blog = require('../repository/blog')
+const { getFixtureOfGW, getPlayerOfFixture } = require('../repository/fixture')
 const player = require('../repository/player')
 const settings = require('../repository/settings')
 const { OK, NOT_FOUND, errorInfo } = require('./HttpStatus')
@@ -30,9 +31,21 @@ const getSettings = async (req, res) => {
     res.status(OK).json(await settings.getSettings())
 }
 
+const getFixture = async (req, res) => {
+    let gwId = Number.parseInt(req.params.gwId)
+    res.status(OK).json(await getFixtureOfGW(gwId))
+}
+
+const fixturePlayer = async (req, res) => {
+    let fId = Number.parseInt(req.params.fId)
+    res.status(OK).json(await getPlayerOfFixture(fId))
+}
+
 module.exports = {
     getAllBlogs,
     getBlog,
     getClubPlayer,
-    getSettings
+    getSettings,
+    getFixture,
+    fixturePlayer
 }

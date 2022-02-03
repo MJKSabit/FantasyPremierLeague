@@ -151,6 +151,7 @@ CREATE TABLE "C##FPL"."fixture" (
   "gw_id" NUMBER(2),
   "home_club" NCHAR(3) NOT NULL,
   "away_club" NCHAR(3) NOT NULL,
+  "result" VARCHAR2(7),
   PRIMARY KEY ("id"),
   CONSTRAINT "fixture_clubs"
     UNIQUE("home_club", "away_club"),
@@ -266,7 +267,7 @@ settings (key, value)
 
 ```sql
 CREATE TABLE "C##FPL"."settings" (
-  "key"    VARCHAR2 NOT NULL,
+  "key"    VARCHAR2(20) NOT NULL,
   "value"  NUMBER,
   PRIMARY KEY ("key")
 );
@@ -290,7 +291,24 @@ CREATE OR REPLACE
 WITH READ ONLY;
 ```
 
+fixture_list
 
+```sql
+CREATE OR REPLACE 
+  VIEW "fixture_list" AS
+  SELECT 
+    "id", 
+    "gw_id", 
+    "home_club", 
+    "away_club", 
+    H."name" "home_full_name", 
+    H."logo_url" "home_logo_url", 
+    A."name" "away_full_name", 
+    A."logo_url" "away_logo_url" 
+  FROM "C##FPL"."fixture" 
+  JOIN "club" H ON ("home_club" = H."short_name") 
+  JOIN "club" A ON ("away_club" = A."short_name");
+```
 
 
 

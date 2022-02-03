@@ -21,4 +21,6 @@ router.post('/match', controller.setMatchGW)
 
 router.post('/settings', controller.setSettings)
 
+router.post('/result/:fId', controller.setFixtureResult)
+
 module.exports = router;
