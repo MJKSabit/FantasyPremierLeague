@@ -38,6 +38,20 @@ module.exports = {
     TABLE_GW: `${DB_NAME}."gw"`,
     TABLE_GW_ID: `"id"`,
     TABLE_GW_DEADLINE: `"deadline"`,
+
+    TABLE_FIXTURE: `${DB_NAME}."fixture"`,
+    TABLE_FIXTURE_ID: `"id"`,
+    TABLE_FIXTURE_GW_ID: `"gw_id"`,
+    TABLE_FIXTURE_HOME_CLUB: `"home_club"`,
+    TABLE_FIXTURE_AWAY_CLUB: `"away_club"`,
+
+    TABLE_SETTINGS: `${DB_NAME}."settings"`,
+    TABLE_SETTINGS_KEY: `"key"`,
+    TABLE_SETTINGS_VALUE: `"value"`,
+
+    SETTING_TYPE_CURRENT_GW: `CURRENT_GW`,
+    SETTING_TYPE_TRANSFER_GW: `TRANSFER_GW`,
+    SETTING_TYPE_POINT_STATUS: `POINT_STATUS`,
     
     VIEW_PLAYER_LIST: `${DB_NAME}."player_list_view"`,
 

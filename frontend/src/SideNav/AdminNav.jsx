@@ -28,10 +28,13 @@ const AdminNav = () => {
             </ListItemButton>)}
         </NavLink>
 
-        <ListItemButton component={NavLink} to='/admin/match'>
-            <ListItemIcon><SportsScoreIcon /></ListItemIcon>
-            <ListItemText primary={'Match Management'} />
-        </ListItemButton>
+        <NavLink to='/admin/match' className={classes.menubtn}>
+            { ({isActive}) => (
+            <ListItemButton selected={isActive}>
+                <ListItemIcon><SportsScoreIcon /></ListItemIcon>
+                <ListItemText primary={'Match Management'} />
+            </ListItemButton>)}
+        </NavLink>
 
         <NavLink to='/admin/gw' className={classes.menubtn}>
             { ({isActive}) => (

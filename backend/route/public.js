@@ -15,4 +15,6 @@ router.get('/blog/:id', public.getBlog)
 
 router.get('/club/player/:club', public.getClubPlayer)
 
+router.get('/settings', public.getSettings)
+
 module.exports = router

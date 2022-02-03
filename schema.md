@@ -262,7 +262,15 @@ CREATE TABLE "C##FPL"."fixture_stats" (
 );
 ```
 
+settings (key, value)
 
+```sql
+CREATE TABLE "C##FPL"."settings" (
+  "key"    VARCHAR2 NOT NULL,
+  "value"  NUMBER,
+  PRIMARY KEY ("key")
+);
+```
 
 # Views
 
@@ -284,24 +292,26 @@ WITH READ ONLY;
 
 
 
+
+
 # Triggers
 
 ```sql
 CREATE OR REPLACE TRIGGER "last_update_trigger" 
-	BEFORE UPDATE ON "player"
-	FOR EACH ROW 
+    BEFORE UPDATE ON "player"
+    FOR EACH ROW 
 DECLARE
 BEGIN
-	
-	IF :NEW."availibility_status" != :OLD."availibility_status" OR 
-		:NEW."availibility_percentage" != :OLD."availibility_percentage" THEN
-		:NEW."availibility_last_changed" := CURRENT_TIMESTAMP;
-	END IF;
-	
-	IF :NEW."price_current" != :OLD."price_current" THEN
-			:NEW."price_last_changed" := CURRENT_TIMESTAMP;
-			:NEW."price_change_amount" := :NEW."price_current" - :OLD."price_current";
-	END IF;
-	
+
+    IF :NEW."availibility_status" != :OLD."availibility_status" OR 
+        :NEW."availibility_percentage" != :OLD."availibility_percentage" THEN
+        :NEW."availibility_last_changed" := CURRENT_TIMESTAMP;
+    END IF;
+
+    IF :NEW."price_current" != :OLD."price_current" THEN
+            :NEW."price_last_changed" := CURRENT_TIMESTAMP;
+            :NEW."price_change_amount" := :NEW."price_current" - :OLD."price_current";
+    END IF;
+
 END;
 ```

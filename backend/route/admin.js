@@ -16,4 +16,9 @@ router.post('/player', controller.addPlayer)
 router.get('/gw', controller.getGW)
 router.post('/gw', controller.setGW)
 
+router.get('/match', controller.getMatchGW)
+router.post('/match', controller.setMatchGW)
+
+router.post('/settings', controller.setSettings)
+
 module.exports = router;

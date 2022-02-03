@@ -74,6 +74,22 @@ export const setGW = async (id, deadline) => {
     return (await axios.post(`${API_URL}/admin/gw`, {id, deadline})).data
 }
 
+export const getSettingsAPI = async () => {
+    return (await axios.get(`${API_URL}/public/settings`)).data
+}
+
+export const setSettingsAPI = async (data) => {
+    return (await axios.post(`${API_URL}/admin/settings`, data)).data
+} 
+
+export const getMatchGW = async (home, away) => {
+    return (await axios.get(`${API_URL}/admin/match?home=${home}&away=${away}`)).data
+}
+
+export const setMatchGW = async (gw, home, away) => {
+    return (await axios.post(`${API_URL}/admin/match`, {gw, home, away})).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

@@ -3,6 +3,8 @@ const { USER_TYPE_SCOUT } = require('../repository/constants')
 const user = require('../repository/user')
 const player = require('../repository/player')
 const gw = require('../repository/gw')
+const fixture = require('../repository/fixture')
+const settings = require('../repository/settings')
 const { validateEmail, validateUsername } = require('../util/validation')
 const { OK, BAD_REQUEST, errorInfo, ACCEPTED, SERVICE_UNAVAILABLE, CREATED, INTERNAL_SERVER_ERROR } = require('./HttpStatus')
 
@@ -81,4 +83,22 @@ const setGW = async (req, res) => {
     await getGW(req, res)
 }
 
-module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW}
+const getMatchGW = async (req, res) => {
+    const {home, away} = req.query
+    res.status(OK).json({gw: await fixture.getGW(home, away)})
+}
+
+const setMatchGW = async (req, res) => {
+    let {gw, home, away} = req.body
+    if (gw === 0)
+        gw = null
+    await fixture.setGW(gw, home, away)
+    res.status(OK).json({'info': 'Set successful'})
+}
+
+const setSettings = async (req, res) => {
+    let settings_data = req.body
+    res.status(OK).json(await settings.setSettings(settings_data))
+}
+
+module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW, getMatchGW, setMatchGW, setSettings}

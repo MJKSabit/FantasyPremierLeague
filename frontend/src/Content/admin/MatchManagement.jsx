@@ -1,7 +1,8 @@
 import { Button, Card, CardContent, Chip, FormControl, Grid, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { useSnackbar } from "material-ui-snackbar-provider";
 import { useEffect, useState } from "react";
-import { getAllClubs, getGW, setGW } from "../../api";
+import { getAllClubs, getGW, getMatchGW, setGW, setMatchGW } from "../../api";
 
 const MatchManagement = () => {
     const [allClub, setAllClub] = useState([]);
@@ -89,6 +90,7 @@ const MatchManagement = () => {
 
 const MatchCard = ({home, away, clubs}) => {
     let home_name, away_name, home_logo, away_logo;
+    const [gwId, setGwID] = useState(0)
 
     clubs.forEach( v => {
         if (v.short_name === home) {
@@ -99,6 +101,14 @@ const MatchCard = ({home, away, clubs}) => {
             away_logo = v.logo_url
         } 
     })
+
+    useEffect(() => {
+        getMatchGW(home, away).then(d => {
+            setGwID(d.gw)
+        })
+    }, [])
+
+    const snackbar = useSnackbar()
 
     return <Grid item xs={12}>
     <Card sx={{width: '100%'}} >
@@ -117,10 +127,14 @@ const MatchCard = ({home, away, clubs}) => {
                     <img src={away_logo} style={{width: '50%'}}/>
                 </Grid>
                 <Grid item xs={2}>
-                    <Input type="number" fullWidth size="small"/>
+                    <TextField variant="standard" type='number' fullWidth size="small" label='GW' value={gwId} onChange={e => {setGwID(Number.parseInt(e.target.value))}}/>
                 </Grid>
                 <Grid item xs={3}>
-                    <Button type="contained" size="small">
+                    <Button type="outlined" size="small" onClick={ () => {
+                        setMatchGW(gwId, home, away).then(d => {
+                            snackbar.showMessage('Updated Successfully!')
+                        })
+                    }}>
                         Update GW
                     </Button>
                 </Grid>
