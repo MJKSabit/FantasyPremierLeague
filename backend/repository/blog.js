@@ -40,4 +40,13 @@ const getBlog = async (id) => {
     return rows
 }
 
-module.exports = {insertBlog, getAllBlogs, getUserBlogs, getBlog}
+const DELETE_BLOG = `DELETE ${TABLE_BLOG} WHERE ${TABLE_BLOG_ID} = :1 AND ${TABLE_BLOG_WRITER} = :2`
+
+const deleteBlog = async (id, author) => {
+    const connection = await getConnection()
+    const result = await connection.execute(DELETE_BLOG, [id, author])
+    connection.release()
+    return result.rowsAffected === 1
+}
+
+module.exports = {insertBlog, getAllBlogs, getUserBlogs, getBlog, deleteBlog}

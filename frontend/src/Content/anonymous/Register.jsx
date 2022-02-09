@@ -34,12 +34,16 @@ const RegisterPage = () => {
 
         <Box component='form' sx={{mt: 3, width: '60%'}} onSubmit={ e=> {
             e.preventDefault()
-            register(username, name, email, password, favouriteClub).then(data => {
-                snackbar.showMessage(`User created with ${data.username}`)
-            }).catch( err => {
-                console.log(err.response)
-                snackbar.showMessage(err.response.data.info)
-            })
+            if (password !== confirmPassword)
+                snackbar.showMessage('Passwords do not match!')
+            else
+                register(username, name, email, password, favouriteClub).then(data => {
+                    snackbar.showMessage(`User created with ${data.username}`)
+                    navigate('/home')
+                }).catch( err => {
+                    console.log(err.response)
+                    snackbar.showMessage(err.response.data.info)
+                })
         }}>
 
             <TextField variant='outlined' type={'text'} label='Email' sx={{display: 'block'}} margin='normal' size='small' fullWidth

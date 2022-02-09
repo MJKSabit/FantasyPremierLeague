@@ -9,7 +9,7 @@ const Fixture = () => {
             Gameweek Fixtures
         </Typography>
         <Typography variant="subtitle2">
-            with Results or <Tooltip title='Fixture Difficulity Rating'><span style={{textDecoration: 'underline'}}>FDR</span></Tooltip>
+            with Results (if available)
         </Typography>
 
         <FixtureList />

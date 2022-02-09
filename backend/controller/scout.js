@@ -1,5 +1,5 @@
 const blog = require('../repository/blog')
-const { BAD_REQUEST, errorInfo, CREATED, OK } = require('./HttpStatus')
+const { BAD_REQUEST, errorInfo, CREATED, OK, NOT_FOUND } = require('./HttpStatus')
 
 
 const createBlog = async (req, res) => {
@@ -29,4 +29,12 @@ const getMyBlog = async (req, res) => {
     res.status(OK).json(await blog.getUserBlogs(username, p))
 }
 
-module.exports = {createBlog, getMyBlog}
+const deleteBlog = async (req, res) => {
+    const id = Number.parseInt(req.params.id)
+    if (await blog.deleteBlog(id, res.user.username))
+        res.status(OK).json({status: 'Deleted'})
+    else
+        res.status(NOT_FOUND).json(errorInfo('Access not allowed or not found!'))
+}
+
+module.exports = {createBlog, getMyBlog, deleteBlog}

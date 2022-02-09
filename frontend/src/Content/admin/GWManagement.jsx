@@ -120,7 +120,30 @@ const PlayerPointSet = ({fixtureId}) => {
     const [sv, setSv] = useState(0)
     const [bp, setBp] = useState(0)
 
-    const total_points = (mp >= 60 ? 2 : (mp > 0 ? 1 : 0)) + gs * 5 + Math.floor(gc*-0.5) + at*3 + og*-2 + ps*5 + pm*-2 + yc*-1 + rc*-3 + Math.floor(sv*0.34) + bp;
+    let player = null
+    let playerPosition = null
+
+    if (playerId!== '') {
+        players.forEach(v => {
+            if (v.id === Number.parseInt(playerId)) {
+                player = v
+                playerPosition = v.position
+                console.log(player);
+            }
+        })
+    }
+
+    let total_points = (mp >= 60 ? 2 : (mp > 0 ? 1 : 0)) + at*3 + og*-2 + ps*5 + pm*-2 + yc*-1 + rc*-3 + Math.floor(sv*0.34) + bp;
+
+    if (playerPosition === 'GKP' || playerPosition === 'DEF') {
+        total_points += (mp >= 60 && gc === 0 ? 4 : Math.floor(gc*-0.5)) + gs*6;
+    } else if (playerPosition === 'MID') {
+        total_points += (mp >= 60 && gc === 0 ? 1 : 0) + gs*5;
+    } else if (playerPosition === 'FWD') {
+        total_points += gs*4;
+    } 
+
+    // (mp >= 60 ? 2 : (mp > 0 ? 1 : 0)) + gs * 5 + Math.floor(gc*-0.5) + at*3 + og*-2 + ps*5 + pm*-2 + yc*-1 + rc*-3 + Math.floor(sv*0.34) + bp;
 
     useEffect(() => {
         getPlayersOfFixture(fixtureId).then(d => {
@@ -130,7 +153,7 @@ const PlayerPointSet = ({fixtureId}) => {
     
     const player_selection = <Select labelId="club-label"
             value={playerId} fullWidth size="small"
-            label='Select Game'
+            label='Select Player'
             onChange={ e => { setPlayerId(e.target.value)}}>
             <MenuItem value=''>Select</MenuItem>
             {players.map( v => (
@@ -189,7 +212,7 @@ const PlayerPointSet = ({fixtureId}) => {
         </Grid>
         <Grid item xs={4}>
             <Button variant='outlined' size='small' fullWidth onClick={ () => {
-                setStat(fixtureId, playerId, total_points, mp, gs, gc, at, og, ps, pm, yc, rc, sv, bp).then(d=>{
+                setStat(Number.parseInt(fixtureId), Number.parseInt(playerId), total_points, mp, gs, gc, at, og, ps, pm, yc, rc, sv, bp).then(d=>{
                     snackbar.showMessage('Updated Successfully!')
                 }).catch(console.log)
             }}>
@@ -202,9 +225,9 @@ const PlayerPointSet = ({fixtureId}) => {
         <Grid item xs={12}>
             {player_selection}
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
             Selected player {playerId} of {fixtureId}
-        </Grid>
+        </Grid> */}
         {playerId !== '' && points_updater}
     </>)
 }

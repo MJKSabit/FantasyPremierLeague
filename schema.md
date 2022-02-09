@@ -303,11 +303,12 @@ CREATE OR REPLACE
     "away_club", 
     H."name" "home_full_name", 
     H."logo_url" "home_logo_url", 
-    A."name" "away_full_name", 
-    A."logo_url" "away_logo_url" 
-  FROM "C##FPL"."fixture" 
-  JOIN "club" H ON ("home_club" = H."short_name") 
-  JOIN "club" A ON ("away_club" = A."short_name");
+    A."name" "away_full_name", 
+    A."logo_url" "away_logo_url",
+    "result" 
+  FROM "C##FPL"."fixture" 
+  JOIN "club" H ON ("home_club" = H."short_name") 
+  JOIN "club" A ON ("away_club" = A."short_name");
 ```
 
 
