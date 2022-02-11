@@ -106,6 +106,10 @@ export const setStat = async (fixture_id, player_id, pts, mp, gs, gc, at, og, ps
     return (await axios.post(`${API_URL}/admin/stat`, {fixture_id, player_id, pts, mp, gs, gc, at, og, ps, pm, yc, rc, sv, bp})).data
 }
 
+export const getAllPlayerStat = async (sort_by, order) => {
+    return (await axios.get(`${API_URL}/public/allplayer?sort_by=${sort_by}&order=${order}`)).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

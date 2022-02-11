@@ -66,6 +66,9 @@ module.exports = {
     TABLE_STAT_ASSISTS: `"assist"`,
     TABLE_STAT_CLEAN_SHEET: `"clean_sheet"`,
 
+    TABLE_TEAM: `${DB_NAME}."team"`,
+    TABLLE_TEAM_OWNER: `"owner"`,
+
     SETTING_TYPE_CURRENT_GW: `CURRENT_GW`,
     SETTING_TYPE_TRANSFER_GW: `TRANSFER_GW`,
     SETTING_TYPE_POINT_STATUS: `POINT_STATUS`,

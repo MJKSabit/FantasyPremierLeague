@@ -14,6 +14,7 @@ import HomePage from './anonymous/Home'
 import RegisterPage from "./anonymous/Register";
 import StatPage from "./anonymous/Stat";
 import CreateBlog from "./scout/CreateBlog";
+import MyTeam from "./user/MyTeam";
 import UserHome from "./user/UserHome";
 
 const CenterContent = () => (
@@ -35,6 +36,7 @@ const CenterContent = () => (
                     <Route path='register' element={<RegisterPage />} />
                     <Route path='user'>
                         <Route path='home' element={<UserHome />} />
+                        <Route path='team' element={<MyTeam />} />
                     </Route>
                     <Route path='admin'>
                         <Route path='home' element={<AdminHome />} />

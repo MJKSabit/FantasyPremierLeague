@@ -5,8 +5,20 @@ const GET_ALL_PLAYER_OF_CLUB = `SELECT * FROM ${VIEW_PLAYER_LIST} WHERE ${TABLE_
 
 const getAllPlayers = async (club) => {
     const connection = await getConnection()
-    console.log(GET_ALL_PLAYER_OF_CLUB);
     const result = (await connection.execute(GET_ALL_PLAYER_OF_CLUB, [club])).rows
+    connection.release()
+    return result
+}
+
+const getPlayersOrdered = async (sort_by, order) => {
+    if (order !== 'ASC' && order !== 'DESC')
+        order = 'DESC'
+    if (sort_by !== "points" && sort_by !== "minutes_played" && sort_by !== "goal_scored" && sort_by !== "assist" && sort_by !== "clean_sheet" && sort_by !== "bonus_point" && sort_by !== "price")
+        sort_by = 'price'
+
+    const GET_ALL_PLAYER = `SELECT * FROM "player_stats" ORDER BY "${sort_by}" ${order}`
+    const connection = await getConnection()
+    const result = (await connection.execute(GET_ALL_PLAYER)).rows
     connection.release()
     return result
 }
@@ -39,4 +51,4 @@ const addPlayer = async (name, club, position, ava_stat, ava_percentage, price) 
     return result.rowsAffected === 1
 }
 
-module.exports = {getAllPlayers, editPlayer, deletePlayer, addPlayer}
+module.exports = {getAllPlayers, editPlayer, deletePlayer, addPlayer, getPlayersOrdered}

@@ -311,8 +311,6 @@ CREATE OR REPLACE
   JOIN "club" A ON ("away_club" = A."short_name");
 ```
 
-
-
 # Triggers
 
 ```sql

@@ -20,4 +20,6 @@ router.get('/settings', public.getSettings)
 router.get('/fixture/:gwId', public.getFixture)
 router.get('/player/:fId', public.fixturePlayer)
 
+router.get('/allplayer', public.getAllPlayer)
+
 module.exports = router

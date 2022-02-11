@@ -41,11 +41,17 @@ const fixturePlayer = async (req, res) => {
     res.status(OK).json(await getPlayerOfFixture(fId))
 }
 
+const getAllPlayer = async (req, res) => {
+    const {sort_by, order} = req.query
+    res.status(OK).json(await player.getPlayersOrdered(sort_by, order))
+}
+
 module.exports = {
     getAllBlogs,
     getBlog,
     getClubPlayer,
     getSettings,
     getFixture,
-    fixturePlayer
+    fixturePlayer,
+    getAllPlayer
 }

@@ -10,4 +10,6 @@ router.use("/admin", require('./admin'))
 
 router.use("/scout", require('./scout'))
 
+router.use("/user", require('./user'))
+
 module.exports = router;
