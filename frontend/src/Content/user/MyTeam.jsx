@@ -1,19 +1,29 @@
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography, Card, CardContent, Chip, Box } from "@mui/material"
+import { useSnackbar } from "material-ui-snackbar-provider"
 import { useEffect, useState } from "react"
-import { getAllPlayerStat } from "../../api"
+import { addTeam, getAllPlayerStat, getUserTeam, userHasTeam } from "../../api"
 
 export default function MyTeam () {
 
+    const [teamname, setTeamname] = useState('')
     const [hasTeam, setHasTeam] = useState(false)
     const [sortBy, setSortBy] = useState('price')
     const [order, setOrder] = useState('ASC')
     const [players, setPlayers] = useState([])
+
+    const snackbar = useSnackbar()
 
     const getPlayers = () => {
         getAllPlayerStat(sortBy, order).then(d => {
             setPlayers(d)
         })
     }
+
+    useEffect(() => {
+        userHasTeam().then(d => {
+            setHasTeam(d)
+        })
+    }, [])
 
     useEffect(() => {
         getPlayers()
@@ -50,7 +60,46 @@ export default function MyTeam () {
 
     usedPlayers.forEach( p => {
         balance_left -= p.price
-    })    
+    })
+
+    const validateAndCreateTeam = () => {
+        const player_set = new Set()
+        const club_count = {}
+        
+        usedPlayers.forEach(p => {
+            player_set.add(p.id)
+            
+            if (!club_count[p.club])
+                club_count[p.club] = 0
+
+            club_count[p.club]++;
+        })
+        
+        if (balance_left < 0) {
+            snackbar.showMessage('Can not use more than $100.0!')
+            return
+        }
+
+        if (player_set.size !== 11) {
+            snackbar.showMessage('Select 11 players!')
+            return
+        }
+
+        for (const key in club_count) {
+            if (club_count[key] > 3) {
+                snackbar.showMessage('Selected more than three players from '+key)
+                return
+            }
+        }
+
+        const selectedPlayerIds = Array.from(player_set)
+        addTeam(teamname, selectedPlayerIds).then(d => {
+            setHasTeam(true)
+        }).catch(err => {
+            snackbar.showMessage('Error Occured!')
+            console.log(err)
+        })
+    }
 
     const createTeam = <>
         <Grid container spacing={2} justifyContent="center" alignItems="center">
@@ -60,12 +109,12 @@ export default function MyTeam () {
                 </Typography>
                 <Typography variant="body2" sx={{my: 3}}>
                     Select 11 player (1 GKP, 4 DEF, 4 MID and 2 FWD) from your given $100.0. 
-                    {/* You can not select more than 3 players from a single club.  */}
+                    You can not select more than 3 players from a single club. 
                     Select the players very carefully...
                 </Typography>
             </Grid>
             <Grid item xs={6}>
-                <TextField label='Team Name' size="small" fullWidth />
+                <TextField label='Team Name' size="small" fullWidth value={teamname} onChange={e => {setTeamname(e.target.value)}} />
             </Grid>
             <Grid item xs={2}>
                 <TextField label='Balance Left' size="small" fullWidth value={Math.round(balance_left*10)/10}/>
@@ -301,16 +350,78 @@ export default function MyTeam () {
             </Grid>
 
             <Grid item xs={6}>
-                <Button variant='contained' fullWidth>Create your Team</Button>
+                <Button variant='contained' fullWidth onClick={validateAndCreateTeam}>Create your Team</Button>
             </Grid>
         </Grid>
     </>
 
-    const showMyTeam = <>
-
-    </>
+    const showMyTeam = <ShowMyTeam />
 
     return <>
         {hasTeam ? showMyTeam : createTeam}
     </>
 }
+
+const ShowMyTeam = () => {
+    const [myTeam, setMyTeam] = useState(null)
+
+    const snackbar = useSnackbar()
+
+    useEffect(() => {
+        getUserTeam().then(d => {
+            setMyTeam(d)
+        }).catch (err => {
+            snackbar.showMessage('Error loading Team')
+        })
+    }, [])
+
+    const players = myTeam === null ? [] : myTeam.players
+
+    return <>
+        {myTeam === null ? <> Loading Team ... </> : 
+        <>
+        <Grid container spacing={2} justifyContent="center" alignItems="center">
+            <Grid item xs={12}>
+                <Typography variant="h5">
+                    {myTeam.team_name}
+                </Typography>
+                <Typography variant="body2" sx={{my: 3}}>
+                    (Balance : {Math.round(myTeam.team_balance*10)/10})
+                </Typography>
+            </Grid>
+            { players.map(p => <PlayerCard data={p} />) }
+        </Grid>
+        </>
+        }
+        
+    </>
+}
+
+const PlayerCard = ({data}) => {
+    
+    const {id, name, position, availibility_status, availibility_percentage, price_current, club, logo_url, player_club} = data
+    const state = {availibility_status, availibility_percentage, price_current}
+    
+    return <Grid item xs={6}>
+        <Card sx={{width: '100%'}} >
+            <CardContent>
+                <Grid container>
+                    <Grid xs={9} item>
+                        <Typography gutterBottom variant="h5" component="div">
+                            {name} 
+                        <Chip label={`${position}`} sx={{mx: 2}}/>
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {player_club} <br />
+                            {state.availibility_status} (<Box sx={{ fontWeight: '700'}} component='span'>{state.availibility_percentage}%</Box>)  <br />
+                            ${Math.round(state.price_current*10)/10}
+                        </Typography>
+                    </Grid>
+                    <Grid xs={3} item>
+                        <img src={logo_url} style={{width: '100%', height: 'auto'}} alt={club} />
+                    </Grid>
+                </Grid>
+            </CardContent>
+        </Card>
+    </Grid>
+} 

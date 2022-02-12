@@ -110,6 +110,18 @@ export const getAllPlayerStat = async (sort_by, order) => {
     return (await axios.get(`${API_URL}/public/allplayer?sort_by=${sort_by}&order=${order}`)).data
 }
 
+export const userHasTeam = async () => {
+    return (await axios.get(`${API_URL}/user/hasteam`)).data
+}
+
+export const addTeam = async (teamname, players) => {
+    return (await axios.post(`${API_URL}/user/team`, {teamname, players})).data
+}
+
+export const getUserTeam = async () => {
+    return (await axios.get(`${API_URL}/user/team`)).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

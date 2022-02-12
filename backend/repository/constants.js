@@ -69,6 +69,8 @@ module.exports = {
     TABLE_TEAM: `${DB_NAME}."team"`,
     TABLLE_TEAM_OWNER: `"owner"`,
 
+    TABLE_CURRENT_SQUAD: `${DB_NAME}."current_squad"`,
+
     SETTING_TYPE_CURRENT_GW: `CURRENT_GW`,
     SETTING_TYPE_TRANSFER_GW: `TRANSFER_GW`,
     SETTING_TYPE_POINT_STATUS: `POINT_STATUS`,
