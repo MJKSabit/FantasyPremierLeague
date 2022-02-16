@@ -28,8 +28,16 @@ const getTeam = async (req, res) => {
     }
 }
 
+const transferTeam = async (req, res) => {
+    const username = req.user.username
+    const {outPlayers, inPlayers} = req.body
+    await team.transferTeam(username, outPlayers, inPlayers)
+    res.status(OK).json({transfer: true})
+}
+
 module.exports = {
     hasTeam,
     createTeam,
-    getTeam
+    getTeam,
+    transferTeam
 }

@@ -9,4 +9,6 @@ router.get('/hasteam', controller.hasTeam)
 router.post('/team', controller.createTeam)
 router.get('/team', controller.getTeam)
 
+router.post('/transfer', controller.transferTeam)
+
 module.exports = router;

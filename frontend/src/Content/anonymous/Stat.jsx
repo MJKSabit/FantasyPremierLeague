@@ -1,10 +1,13 @@
-import { FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
+import { FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material"
 import { useEffect, useState } from "react"
 import { getAllPlayerStat } from "../../api"
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 
-const Stat = () =>  (<>
-
+const StatDialog = ({id}) =>  (<>
+    <DialogTitle>{id}</DialogTitle>
+    <DialogContent>
+        Content
+    </DialogContent>
 </>)
 
 const StatPage = () => {
@@ -14,6 +17,11 @@ const StatPage = () => {
     const [position, setPostion] = useState('ALL')
     const [name, setName] = useState('')
     const [players, setPlayers] = useState([])
+    const [infoPlayer, setInfoPlayer] = useState(null)
+
+    const handleClose = () => {
+        setInfoPlayer(null)
+    }
 
     const getPlayers = () => {
         getAllPlayerStat(sortBy, order).then(d => {
@@ -28,6 +36,14 @@ const StatPage = () => {
     const filteredPlayers = players.filter(p => (p.name.includes(name) && (position==='ALL' || p.position===position)))
 
     return (<Grid container spacing={2} justifyContent="center" alignItems="center">
+            <Dialog open={infoPlayer} onClose={handleClose} fullWidth='true'>
+                <StatDialog id={infoPlayer}/>
+                <DialogActions>
+                    <Button onClick={handleClose}>
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Grid item xs={12}>
                 <Typography variant="h5">
                     Player Statistics
@@ -111,7 +127,7 @@ const StatPage = () => {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                     <TableCell>
-                        <IconButton size="small">
+                        <IconButton size="small" onClick={() => {setInfoPlayer(p.id)}}>
                             <InfoIcon />
                         </IconButton>    
                     </TableCell>    

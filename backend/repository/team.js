@@ -1,5 +1,5 @@
 const { getConnection } = require("../config/database");
-const { TABLE_TEAM, TABLLE_TEAM_OWNER, TABLE_CURRENT_SQUAD } = require("./constants");
+const { TABLE_TEAM, TABLLE_TEAM_OWNER, TABLE_CURRENT_SQUAD, TABLE_PLAYER } = require("./constants");
 
 
 const HAS_TEAM_QUERY = `SELECT * FROM ${TABLE_TEAM} WHERE ${TABLLE_TEAM_OWNER} = :1`
@@ -46,8 +46,33 @@ const getTeam = async (username) => {
     return team
 }
 
+const GET_PLAYER_PRICE = `SELECT "price_current" FROM ${TABLE_PLAYER} WHERE "id" = :1`
+const SET_TEAM_BALANCE_AND_POINTS = `UPDATE ${TABLE_TEAM} SET "team_balance" = "team_balance" + :1, "total_points" = "total_points" - 4 * :2 WHERE "id" = :3`
+const TRANSFER_PLAYER = `UPDATE "current_squad" SET "player_id" = :1 WHERE "player_id" = :2 AND "team_id" = :3`
+
+const transferTeam = async (username, outPlayers, inPlayers) => {
+    let inPrice = 0, outPrice = 0
+    const connection = await getConnection()
+    const teamId = (await connection.execute(GET_TEAM_ID, [username])).rows[0].id
+
+    for (let i=0; i<inPlayers.length; i++)
+        inPrice += (await connection.execute(GET_PLAYER_PRICE, [inPlayers[i]])).rows[0].price_current
+    
+    for (let i=0; i<outPlayers.length; i++)
+        outPrice += (await connection.execute(GET_PLAYER_PRICE, [outPlayers[i]])).rows[0].price_current
+
+    await connection.execute(SET_TEAM_BALANCE_AND_POINTS, [outPrice-inPrice, outPlayers.length, teamId], { autoCommit: false })
+    
+    for (let i=0; i<inPlayers.length; i++)
+        await connection.execute(TRANSFER_PLAYER, [inPlayers[i], outPlayers[i], teamId], { autoCommit: false })
+
+    connection.commit()
+    connection.release()
+}
+
 module.exports = {
     hasTeam,
     addTeam,
-    getTeam
+    getTeam,
+    transferTeam
 }

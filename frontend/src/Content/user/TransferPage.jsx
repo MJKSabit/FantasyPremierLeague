@@ -1,7 +1,8 @@
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography, Card, CardContent, Chip, Box } from "@mui/material"
 import { useSnackbar } from "material-ui-snackbar-provider"
 import { useEffect, useState } from "react"
-import { getAllPlayerStat, getUserTeam, userHasTeam } from "../../api"
+import { useNavigate } from "react-router-dom"
+import { getAllPlayerStat, getUserTeam, transferTeam, userHasTeam } from "../../api"
 
 export default function TransferPage() {
 
@@ -11,6 +12,7 @@ export default function TransferPage() {
     const [players, setPlayers] = useState([])
 
     const snackbar = useSnackbar()
+    const navigate = useNavigate()
 
     const getPlayers = () => {
         getAllPlayerStat(sortBy, order).then(d => {
@@ -122,13 +124,11 @@ export default function TransferPage() {
             }
         }
 
-        const selectedPlayerIds = Array.from(player_set)
-        // addTeam(teamname, selectedPlayerIds).then(d => {
-        //     setHasTeam(true)
-        // }).catch(err => {
-        //     snackbar.showMessage('Error Occured!')
-        //     console.log(err)
-        // })
+        transferTeam(Array.from(teamMinusUsed), Array.from(usedMinusTeam)).then(d => {
+            navigate('/user/team')
+        }).catch(err => {
+            snackbar.showMessage('Can not transfer!')
+        })
     }
 
     
