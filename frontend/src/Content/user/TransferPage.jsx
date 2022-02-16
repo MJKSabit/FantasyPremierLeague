@@ -1,12 +1,11 @@
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography, Card, CardContent, Chip, Box } from "@mui/material"
 import { useSnackbar } from "material-ui-snackbar-provider"
 import { useEffect, useState } from "react"
-import { addTeam, getAllPlayerStat, getUserTeam, userHasTeam } from "../../api"
+import { getAllPlayerStat, getUserTeam, userHasTeam } from "../../api"
 
-export default function MyTeam () {
+export default function TransferPage() {
 
-    const [teamname, setTeamname] = useState('')
-    const [hasTeam, setHasTeam] = useState(false)
+    const [myTeam, setMyTeam] = useState(null)
     const [sortBy, setSortBy] = useState('price')
     const [order, setOrder] = useState('ASC')
     const [players, setPlayers] = useState([])
@@ -20,15 +19,9 @@ export default function MyTeam () {
     }
 
     useEffect(() => {
-        userHasTeam().then(d => {
-            setHasTeam(d.hasTeam)
-        })
-    }, [])
-
-    useEffect(() => {
         getPlayers()
     }, [sortBy, order])
-    
+
     const [gk, setGk] = useState(0)
 
     const [def1, setDef1] = useState(0)
@@ -48,6 +41,29 @@ export default function MyTeam () {
     const usedPlayers = []
 
     const positional_player = {'GKP': [], 'DEF': [], 'MID': [], 'FWD': []}
+    
+    useEffect(() => {
+        getUserTeam().then(d => {
+            setMyTeam(d)
+            const positional_player = {'GKP': [], 'DEF': [], 'MID': [], 'FWD': []}
+            d.players.forEach(p => {
+                positional_player[p.position].push(p)
+            })
+            setGk(positional_player['GKP'][0].id)
+            setDef1(positional_player['DEF'][0].id)
+            setDef2(positional_player['DEF'][1].id)
+            setDef3(positional_player['DEF'][2].id)
+            setDef4(positional_player['DEF'][3].id)
+            setMid1(positional_player['MID'][0].id)
+            setMid2(positional_player['MID'][1].id)
+            setMid3(positional_player['MID'][2].id)
+            setMid4(positional_player['MID'][3].id)
+            setFwd1(positional_player['FWD'][0].id)
+            setFwd2(positional_player['FWD'][1].id)
+        }).catch (err => {
+            snackbar.showMessage('Create Your Team First!')
+        })
+    }, [])
 
     players.forEach(p => {
         for (let i=0; i<playerIds.length; i++)
@@ -56,11 +72,25 @@ export default function MyTeam () {
         positional_player[p.position].push(p)
     });
 
-    let balance_left = 100.0;
+    const teamPlayers = myTeam === null ? [] : myTeam.players
+    const teamPlayerSet = new Set()
+    
+    const usedPlayersSet = new Set(playerIds)
+    usedPlayersSet.delete(0)
+
+    let balance_left = myTeam === null ? 0 : myTeam.team_balance;
+
+    teamPlayers.forEach( p => {
+        balance_left += p.price_current
+        teamPlayerSet.add(p.id)
+    })
 
     usedPlayers.forEach( p => {
         balance_left -= p.price
     })
+
+    const teamMinusUsed = new Set([...teamPlayerSet].filter(v => (!usedPlayersSet.has(v))))
+    const usedMinusTeam = new Set([...usedPlayersSet].filter(v => (!teamPlayerSet.has(v))))
 
     const validateAndCreateTeam = () => {
         const player_set = new Set()
@@ -93,31 +123,51 @@ export default function MyTeam () {
         }
 
         const selectedPlayerIds = Array.from(player_set)
-        addTeam(teamname, selectedPlayerIds).then(d => {
-            setHasTeam(true)
-        }).catch(err => {
-            snackbar.showMessage('Error Occured!')
-            console.log(err)
-        })
+        // addTeam(teamname, selectedPlayerIds).then(d => {
+        //     setHasTeam(true)
+        // }).catch(err => {
+        //     snackbar.showMessage('Error Occured!')
+        //     console.log(err)
+        // })
     }
 
+    
     const createTeam = <>
         <Grid container spacing={2} justifyContent="center" alignItems="center">
             <Grid item xs={12}>
                 <Typography variant="h5">
-                    Create your team and participate in FPL
+                    Transfer players in and out
                 </Typography>
                 <Typography variant="body2" sx={{my: 3}}>
-                    Select 11 player (1 GKP, 4 DEF, 4 MID and 2 FWD) from your given $100.0. 
+                    Select 11 player (1 GKP, 4 DEF, 4 MID and 2 FWD) within your budget. 
                     You can not select more than 3 players from a single club. 
                     Select the players very carefully...
                 </Typography>
             </Grid>
-            <Grid item xs={6}>
-                <TextField label='Team Name' size="small" fullWidth value={teamname} onChange={e => {setTeamname(e.target.value)}} />
+            <Grid item xs={8}>
+                <Typography variant="h5">
+                    {myTeam && myTeam.team_name}
+                </Typography>
             </Grid>
-            <Grid item xs={2}>
-                <TextField label='Balance Left' size="small" fullWidth value={Math.round(balance_left*10)/10}/>
+            <Grid item xs={4}>
+                <Typography variant="h6" sx={{color: balance_left<0 ? 'error.main' : 'success.main'}}>
+                    Balance Left : {Math.round(balance_left*10)/10}
+                </Typography>
+            </Grid>
+            <Grid item xs={4}>
+                <Typography variant="span" sx={{color: 'warning.main'}}>
+                    Total Transfers : {teamMinusUsed.size}
+                </Typography>
+            </Grid>
+            <Grid item xs={4}>
+                Points: &nbsp;
+                <Typography variant="span" sx={{color: 'success.main'}}>
+                    {myTeam && myTeam.total_points}
+                </Typography>
+                &nbsp;
+                <Typography variant="span" sx={{color: 'error.main'}}>
+                    - {teamMinusUsed.size*4}
+                </Typography>
             </Grid>
             <Grid item xs={2}>
             <FormControl size="small" fullWidth>
@@ -350,85 +400,13 @@ export default function MyTeam () {
             </Grid>
 
             <Grid item xs={6}>
-                <Button variant='contained' fullWidth onClick={validateAndCreateTeam}>Create your Team</Button>
+                <Button variant='contained' fullWidth onClick={validateAndCreateTeam}>Transfer</Button>
             </Grid>
         </Grid>
     </>
 
-    const showMyTeam = <ShowMyTeam />
 
     return <>
-        {hasTeam ? showMyTeam : createTeam}
+        {myTeam === null ? <> Loading Transfer ... </> : createTeam}
     </>
 }
-
-const ShowMyTeam = () => {
-    const [myTeam, setMyTeam] = useState(null)
-
-    const snackbar = useSnackbar()
-
-    useEffect(() => {
-        getUserTeam().then(d => {
-            setMyTeam(d)
-        }).catch (err => {
-            snackbar.showMessage('Error loading Team')
-        })
-    }, [])
-
-    const players = myTeam === null ? [] : myTeam.players
-
-    return <>
-        {myTeam === null ? <> Loading Team ... </> : 
-        <>
-        <Grid container spacing={2} justifyContent="center" alignItems="center">
-            <Grid item xs={6}>
-                <Typography variant="h5">
-                    {myTeam.team_name}
-                </Typography>
-            </Grid>
-            <Grid item xs={3}>
-                <Typography variant="h6" sx={{color: 'info.main'}}>
-                    Balance : {Math.round(myTeam.team_balance*10)/10}
-                </Typography>
-            </Grid>
-            <Grid item xs={3}>
-                <Typography variant="h6" sx={{color: 'success.main'}}>
-                    Points: {myTeam.total_points}
-                </Typography>
-            </Grid>
-            { players.map(p => <PlayerCard data={p} />) }
-        </Grid>
-        </>
-        }
-        
-    </>
-}
-
-const PlayerCard = ({data}) => {
-    
-    const {id, name, position, availibility_status, availibility_percentage, price_current, club, logo_url, player_club} = data
-    const state = {availibility_status, availibility_percentage, price_current}
-    
-    return <Grid item xs={6}>
-        <Card sx={{width: '100%'}} >
-            <CardContent>
-                <Grid container>
-                    <Grid xs={9} item>
-                        <Typography gutterBottom variant="h5" component="div">
-                            {name} 
-                        <Chip label={`${position}`} sx={{mx: 2}}/>
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            {player_club} <br />
-                            {state.availibility_status} (<Box sx={{ fontWeight: '700'}} component='span'>{state.availibility_percentage}%</Box>)  <br />
-                            ${Math.round(state.price_current*10)/10}
-                        </Typography>
-                    </Grid>
-                    <Grid xs={3} item>
-                        <img src={logo_url} style={{width: '100%', height: 'auto'}} alt={club} />
-                    </Grid>
-                </Grid>
-            </CardContent>
-        </Card>
-    </Grid>
-} 
