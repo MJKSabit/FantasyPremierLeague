@@ -24,4 +24,7 @@ router.post('/settings', controller.setSettings)
 router.post('/result/:fId', controller.setFixtureResult)
 router.post('/stat', controller.setStats)
 
+router.get('/preprocess', controller.preprocess)
+router.get('/postprocess', controller.postprocess)
+
 module.exports = router;

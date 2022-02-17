@@ -146,12 +146,28 @@ export const leaveLeagueAPI = async (leagueId) => {
     return (await axios.delete(`${API_URL}/user/join/${leagueId}`)).data
 }
 
+export const getLeagueAPI = async (leagueId) => {
+    return (await axios.get(`${API_URL}/user/league/${leagueId}`)).data
+}
+
+export const deleteLeagueAPI = async (leagueId) => {
+    return (await axios.delete(`${API_URL}/user/league/${leagueId}`)).data
+}
+
 export const myLeagueAPI = async () => {
     return (await axios.get(`${API_URL}/user/myleague`)).data
 }
 
 export const joinedLeagueAPI = async () => {
     return (await axios.get(`${API_URL}/user/joinedleague`)).data
+}
+
+export const adminPreProcess = async () => {
+    return (await axios.get(`${API_URL}/admin/preprocess`))
+}
+
+export const adminPostProcess = async () => {
+    return (await axios.get(`${API_URL}/admin/postprocess`))
 }
 
 axios.interceptors.request.use( config => {

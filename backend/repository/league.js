@@ -69,10 +69,25 @@ const joinedLeague = async (username) => {
     return res
 }
 
-const getLeague = async (leagueId) => {
-    const connection = await getConnection()
 
+const GET_LEAGUE_NAME = `SELECT "name" FROM "league" WHERE "id" = :1`
+const GET_LEAGUE_PARTICIPATION = `SELECT P.*, T."team_name", T."total_points", RANK() OVER(ORDER BY T."total_points" DESC) "rank" FROM "participation" P JOIN "team" T ON (P."team_id" = T."id") WHERE P."league_id" = :1 ORDER BY "rank"`
+const getLeague = async (leagueId) => {
+    const result = {}
+    const connection = await getConnection()
+    result.league = (await connection.execute(GET_LEAGUE_NAME, [leagueId])).rows
+    result.participation = (await connection.execute(GET_LEAGUE_PARTICIPATION, [leagueId])).rows
     connection.release()
+    return result
+}
+
+const DELETE_LEAGUE = `DELETE FROM "league" WHERE "owner" = :1 AND "id" = :2`
+
+const deleteLeague = async (owner, leagueId) => {
+    const connection = await getConnection()
+    const res = await connection.execute(DELETE_LEAGUE, [owner, leagueId])
+    connection.release()
+    return res.rowsAffected === 1
 }
 
 module.exports = {
@@ -82,4 +97,5 @@ module.exports = {
     joinedLeague,
     getLeague,
     leaveLeague,
+    deleteLeague
 }

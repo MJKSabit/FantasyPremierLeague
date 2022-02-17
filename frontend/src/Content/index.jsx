@@ -14,7 +14,7 @@ import HomePage from './anonymous/Home'
 import RegisterPage from "./anonymous/Register";
 import StatPage from "./anonymous/Stat";
 import CreateBlog from "./scout/CreateBlog";
-import LeaguePage from "./user/LeaguePage";
+import LeaguePage, { SingleLeague } from "./user/LeaguePage";
 import MyTeam from "./user/MyTeam";
 import PointsPage from "./user/PointsPage";
 import TransferPage from "./user/TransferPage";
@@ -41,8 +41,10 @@ const CenterContent = () => (
                         <Route path='home' element={<UserHome />} />
                         <Route path='team' element={<MyTeam />} />
                         <Route path='point' element={<PointsPage />} />
+                        <Route path='point/:teamId' element={<PointsPage />} />
                         <Route path='transfer' element={<TransferPage />} />
                         <Route path='league' element={<LeaguePage />} />
+                        <Route path='league/:leagueId' element={<SingleLeague />} />
                     </Route>
                     <Route path='admin'>
                         <Route path='home' element={<AdminHome />} />

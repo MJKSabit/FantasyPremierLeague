@@ -4,10 +4,13 @@ import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import { Button, Dialog, DialogActions, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { getPoint, getSettingsAPI } from "../../api";
 import { StatDialog } from "../anonymous/Stat";
 
 export default function PointsPage () {
+
+    let urlParams = useParams()
 
     const [gwId, setGwId] = useState(1)
     const [team, setTeam] = useState({players: [], team: []})
@@ -22,7 +25,7 @@ export default function PointsPage () {
     }, [])
 
     useEffect(() => {
-        getPoint(gwId).then(d => {
+        getPoint(gwId, urlParams.teamId).then(d => {
             setTeam(d)
         })
     }, [gwId])

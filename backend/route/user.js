@@ -17,6 +17,7 @@ router.get('/points', controller.getPoints)
 router.post('/league', controller.addLeague)
 
 router.get('/league/:id', controller.getLeague)
+router.delete('/league/:id', controller.deleteLeague)
 router.post('/join/:id', controller.joinLeague)
 router.delete('/join/:id', controller.leaveLeague)
 

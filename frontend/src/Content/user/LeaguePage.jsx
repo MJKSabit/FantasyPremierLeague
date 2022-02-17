@@ -1,8 +1,8 @@
 import { Typography, Grid, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "material-ui-snackbar-provider";
-import { addLeagueAPI, joinedLeagueAPI, joinLeagueAPI, leaveLeagueAPI, myLeagueAPI } from "../../api";
+import { addLeagueAPI, deleteLeagueAPI, getLeagueAPI, joinedLeagueAPI, joinLeagueAPI, leaveLeagueAPI, myLeagueAPI } from "../../api";
 
 const AddLeagueDialog = ({handleClose}) => {
     const [leagueName, setLeagueName] = useState('')
@@ -112,6 +112,7 @@ export default function LeaguePage () {
             <TableCell> League ID </TableCell>
             <TableCell align="left">League Name</TableCell>
             <TableCell align="right">League Code</TableCell>
+            <TableCell align="right">Remove</TableCell>
         </TableRow>
         </TableHead>
         <TableBody>
@@ -128,6 +129,17 @@ export default function LeaguePage () {
             </TableCell>
             <TableCell align="right">
                 {p.invitation_code}
+            </TableCell>
+            <TableCell>
+                <Button fullWidth variant='text' color="error" onClick={() => {
+                    deleteLeagueAPI(p.id).then(d => {
+                        console.log(d)
+                        loadMyLeague()
+                        loadJoinedLeague()
+                    })
+                }}>
+                    Delete
+                </Button>
             </TableCell>
             </TableRow>
         ))}
@@ -182,5 +194,58 @@ export default function LeaguePage () {
     </Table>
     </TableContainer>
 
+    </>
+}
+
+export const SingleLeague = () => {
+    let urlParams = useParams()
+    const navigate = useNavigate()
+    const [data, setData] = useState({league: [], participation: []})
+
+    useEffect(() => {
+        if (urlParams.leagueId) 
+            getLeagueAPI(Number.parseInt(urlParams.leagueId)).then(d => {
+                setData(d)
+            })
+    }, [urlParams.leagueId])
+
+    return <>
+        League Name: {data.league.map(d => (<Typography variant="h5" key={d.name}>{d.name}</Typography>))}
+
+        <TableContainer component={Paper} sx={{my: 2}}>
+    <Table sx={{ minWidth: '100%' }} aria-label="simple table">
+        <TableHead>
+        <TableRow>
+            <TableCell> Rank </TableCell>
+            <TableCell align="left">Team Name</TableCell>
+            <TableCell align="right">Total Points</TableCell>
+            <TableCell align='center'>View Team</TableCell>
+        </TableRow>
+        </TableHead>
+        <TableBody>
+        {data.participation.map(p => (
+            <TableRow
+            key={p.team_id}
+            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+            <TableCell>
+                {p.rank}
+            </TableCell>    
+            <TableCell component="th" scope="row">
+                {p.team_name}
+            </TableCell>
+            <TableCell align="right">
+                {p.total_points}
+            </TableCell>
+            <TableCell>
+                <Button fullWidth variant='text' onClick={() => {navigate('/user/point/'+p.team_id)}}>
+                    View
+                </Button>
+            </TableCell>
+            </TableRow>
+        ))}
+        </TableBody>
+    </Table>
+    </TableContainer>
     </>
 }

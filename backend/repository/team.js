@@ -72,7 +72,7 @@ const transferTeam = async (username, outPlayers, inPlayers) => {
 
 const GET_TEAM_DETAILS = `SELECT T."id", T."team_name", T."team_balance", T."total_points", U."name", C."name" "fav_club", C."logo_url" FROM "team" T JOIN "user" U ON (T."owner" = U."username") JOIN "club" C ON (U."favourite_club" = C."short_name") WHERE T."id" = :1`
 
-const GET_GW_POINTS = `SELECT P."id", P."name", P."club", P."position", NVL((SELECT SUM(FS."points") FROM "fixture_stats" FS JOIN "fixture" F ON (FS."fixture_id" = F."id") WHERE F."gw_id" = GS."gw_id" ), 0) "gw_points" FROM "prev_gw_sqad" GS JOIN "player" P ON ("player_id" = "id") WHERE GS."team_id" = :1 AND GS."gw_id" = :2`
+const GET_GW_POINTS = `SELECT P."id", P."name", P."club", P."position", NVL((SELECT SUM(FS."points") FROM "fixture_stats" FS JOIN "fixture" F ON (FS."fixture_id" = F."id") WHERE F."gw_id" = GS."gw_id" AND P."id" = FS."player_id" ), 0) "gw_points" FROM "prev_gw_sqad" GS JOIN "player" P ON ("player_id" = "id") WHERE GS."team_id" = :1 AND GS."gw_id" = :2`
 const gwPoints = async (teamId, gwId) => {
     const result = {}
     const connection = await getConnection()

@@ -89,6 +89,19 @@ const leaveLeague = async (req, res) => {
 
 const getLeague = async (req, res) => {
     const id = Number.parseInt(req.params.id)
+    res.status(OK).json(await league.getLeague(id))
+}
+
+
+const deleteLeague = async (req, res) => {
+    const id = Number.parseInt(req.params.id)
+    const username = req.user.username
+    const deleted = await league.deleteLeague(username, id)
+
+    if (deleted)
+        res.status(OK).json({deleted: true})
+    else
+        res.status(NOT_FOUND).json(errorInfo('Not Found/Not Owner'))
 }
 
 module.exports = {
@@ -102,5 +115,6 @@ module.exports = {
     getTeam,
     transferTeam,
     getPoints,
-    leaveLeague
+    leaveLeague,
+    deleteLeague
 }

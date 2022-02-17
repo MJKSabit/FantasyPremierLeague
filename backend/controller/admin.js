@@ -115,5 +115,14 @@ const setStats = async (req, res) => {
     res.status(OK).json({'info': 'Set successful'})
 }
 
+const preprocess = async (req, res) => {
+    await settings.preprocess()
+    res.status(OK).json({'done': true})
+}
 
-module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW, getMatchGW, setMatchGW, setSettings, setFixtureResult, setStats}
+const postprocess = async (req, res) => {
+    await settings.postprocess()
+    res.status(OK).json({'done': true})
+}
+
+module.exports = { getUser, disableUserStat, createScout, editPlayer, deletePlayer, addPlayer, getGW, setGW, getMatchGW, setMatchGW, setSettings, setFixtureResult, setStats, preprocess, postprocess}
