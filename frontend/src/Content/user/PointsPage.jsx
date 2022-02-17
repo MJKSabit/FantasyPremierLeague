@@ -31,6 +31,11 @@ export default function PointsPage () {
         setInfoPlayer(null)
     }
 
+    let thisGwPoint = 0
+    team.players.forEach(p => {
+        thisGwPoint += p.gw_points
+    })
+
     return <>
     <Typography variant="h6">
         Gameweek Points
@@ -63,6 +68,10 @@ export default function PointsPage () {
         <Box sx={{p:1}}>
             Points<br />
             {t.total_points}
+        </Box>
+        <Box sx={{p:1, color: 'success.main'}}>
+            GW Points<br />
+            {thisGwPoint}
         </Box>
     </Box>)}
 

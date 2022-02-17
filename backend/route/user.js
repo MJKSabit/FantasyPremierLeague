@@ -14,4 +14,14 @@ router.post('/transfer', controller.transferTeam)
 router.get('/points/:teamId', controller.getPoints)
 router.get('/points', controller.getPoints)
 
+router.post('/league', controller.addLeague)
+
+router.get('/league/:id', controller.getLeague)
+router.post('/join/:id', controller.joinLeague)
+router.delete('/join/:id', controller.leaveLeague)
+
+router.get('/myleague', controller.myLeague)
+router.get('/joinedleague', controller.joinedLeague)
+
+
 module.exports = router;

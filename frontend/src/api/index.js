@@ -134,6 +134,26 @@ export const getPoint = async (gwId, teamId) => {
     return (await axios.get(`${API_URL}/user/points${teamId ? '/'+teamId : ''}?gw=${gwId}`)).data
 }
 
+export const addLeagueAPI = async (leagueName, leagueCode) => {
+    return (await axios.post(`${API_URL}/user/league`, {leagueName, leagueCode})).data
+}
+
+export const joinLeagueAPI = async (leagueId, leagueCode) => {
+    return (await axios.post(`${API_URL}/user/join/${leagueId}`, {leagueCode})).data
+}
+
+export const leaveLeagueAPI = async (leagueId) => {
+    return (await axios.delete(`${API_URL}/user/join/${leagueId}`)).data
+}
+
+export const myLeagueAPI = async () => {
+    return (await axios.get(`${API_URL}/user/myleague`)).data
+}
+
+export const joinedLeagueAPI = async () => {
+    return (await axios.get(`${API_URL}/user/joinedleague`)).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))
