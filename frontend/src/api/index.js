@@ -130,6 +130,10 @@ export const getPlayerStat = async (playerId) => {
     return (await axios.get(`${API_URL}/public/stats/${playerId}`)).data
 }
 
+export const getPoint = async (gwId, teamId) => {
+    return (await axios.get(`${API_URL}/user/points${teamId ? '/'+teamId : ''}?gw=${gwId}`)).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

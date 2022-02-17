@@ -70,9 +70,31 @@ const transferTeam = async (username, outPlayers, inPlayers) => {
     connection.release()
 }
 
+const GET_TEAM_DETAILS = `SELECT T."id", T."team_name", T."team_balance", T."total_points", U."name", C."name" "fav_club", C."logo_url" FROM "team" T JOIN "user" U ON (T."owner" = U."username") JOIN "club" C ON (U."favourite_club" = C."short_name") WHERE T."id" = :1`
+
+const GET_GW_POINTS = `SELECT P."id", P."name", P."club", P."position", NVL((SELECT SUM(FS."points") FROM "fixture_stats" FS JOIN "fixture" F ON (FS."fixture_id" = F."id") WHERE F."gw_id" = GS."gw_id" ), 0) "gw_points" FROM "prev_gw_sqad" GS JOIN "player" P ON ("player_id" = "id") WHERE GS."team_id" = :1 AND GS."gw_id" = :2`
+const gwPoints = async (teamId, gwId) => {
+    const result = {}
+    const connection = await getConnection()
+    result.team = (await connection.execute(GET_TEAM_DETAILS, [teamId])).rows
+    result.players = (await connection.execute(GET_GW_POINTS, [teamId, gwId])).rows
+    connection.release()
+    return result
+}
+
+const gwPointsFromUsername = async (username, gwId) => {
+    const connection = await getConnection()
+    const rows = (await connection.execute(GET_TEAM_ID, [username])).rows
+    const teamId = rows.length && rows[0].id
+    connection.release()
+    return await gwPoints(teamId, gwId)
+}
+
 module.exports = {
     hasTeam,
     addTeam,
     getTeam,
-    transferTeam
+    transferTeam,
+    gwPoints,
+    gwPointsFromUsername
 }

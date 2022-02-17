@@ -37,12 +37,19 @@ const transferTeam = async (req, res) => {
 
 const getPoints = async (req, res) => {
     const username = req.user.username
-    
+    const teamId = req.params.teamId && Number.parseInt(req.params.teamId)
+    const gwId = Number.parseInt(req.query.gw)
+
+    if (!teamId)
+        res.status(OK).json(await team.gwPointsFromUsername(username, gwId))
+    else
+        res.status(OK).json(await team.gwPoints(teamId, gwId))
 }
 
 module.exports = {
     hasTeam,
     createTeam,
     getTeam,
-    transferTeam
+    transferTeam,
+    getPoints
 }

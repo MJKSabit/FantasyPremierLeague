@@ -11,6 +11,7 @@ router.get('/team', controller.getTeam)
 
 router.post('/transfer', controller.transferTeam)
 
-
+router.get('/points/:teamId', controller.getPoints)
+router.get('/points', controller.getPoints)
 
 module.exports = router;
