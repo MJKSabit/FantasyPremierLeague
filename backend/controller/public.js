@@ -46,6 +46,11 @@ const getAllPlayer = async (req, res) => {
     res.status(OK).json(await player.getPlayersOrdered(sort_by, order))
 }
 
+const getPlayerDetailedStat = async (req, res) => {
+    let playerId = Number.parseInt(req.params.playerId)
+    res.status(OK).json(await player.playerStats(playerId))
+}
+
 module.exports = {
     getAllBlogs,
     getBlog,
@@ -53,5 +58,6 @@ module.exports = {
     getSettings,
     getFixture,
     fixturePlayer,
-    getAllPlayer
+    getAllPlayer,
+    getPlayerDetailedStat
 }

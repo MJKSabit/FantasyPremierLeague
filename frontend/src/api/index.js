@@ -126,6 +126,10 @@ export const transferTeam = async (outPlayers, inPlayers) => {
     return (await axios.post(`${API_URL}/user/transfer`, {outPlayers, inPlayers})).data
 }
 
+export const getPlayerStat = async (playerId) => {
+    return (await axios.get(`${API_URL}/public/stats/${playerId}`)).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

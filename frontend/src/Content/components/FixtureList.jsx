@@ -6,21 +6,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { getFixtureOfGW } from "../../api";
 
-const data = {
-    gw: 1,
-    matches: [
-        {
-            HOME: 'ARS',
-            AWAY: 'MNU',
-            FDR: 3,
-            RESULT: {
-                HOME: 4,
-                AWAY: 1
-            }
-        }
-    ]
-}
-
 const SingleMatch = ({data}) => {
     return (<>
         <Grid item xs={4} sx={{textAlign: 'right', pr: 2}}>

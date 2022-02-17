@@ -35,6 +35,11 @@ const transferTeam = async (req, res) => {
     res.status(OK).json({transfer: true})
 }
 
+const getPoints = async (req, res) => {
+    const username = req.user.username
+    
+}
+
 module.exports = {
     hasTeam,
     createTeam,

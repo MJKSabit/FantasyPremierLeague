@@ -22,4 +22,6 @@ router.get('/player/:fId', public.fixturePlayer)
 
 router.get('/allplayer', public.getAllPlayer)
 
+router.get('/stats/:playerId', public.getPlayerDetailedStat)
+
 module.exports = router

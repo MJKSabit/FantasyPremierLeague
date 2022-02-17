@@ -1,14 +1,122 @@
-import { FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material"
+import { FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Dialog, DialogActions, DialogContent, DialogTitle, Button, Box } from "@mui/material"
 import { useEffect, useState } from "react"
-import { getAllPlayerStat } from "../../api"
+import { getAllPlayerStat, getPlayerStat } from "../../api"
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 
-const StatDialog = ({id}) =>  (<>
-    <DialogTitle>{id}</DialogTitle>
-    <DialogContent>
-        Content
-    </DialogContent>
-</>)
+export const StatDialog = ({id}) =>  {
+
+    const [response, setResponse] = useState({stats: [], fixture: []})
+
+    useEffect(() => {
+        getPlayerStat(id).then(d => {
+            setResponse(d)
+        })
+    }, [])
+
+    const p = response.player
+
+    return <>
+        <DialogTitle>Player Statistics</DialogTitle>
+        <DialogContent>
+            <div style={{ width: '100%' }}>
+            <Box sx={{display: "flex"}} >
+                <Box sx={{p: 1}}>
+                    <img src={p && p.logo_url} style={{height: '35px'}} />
+                </Box>
+                <Box sx={{flexGrow: 1}}>
+                    {p && p.name} ({p && p.position})<br />
+                    {p && p.club_name} - {p && p.availibility_status} ({p && p.availibility_percentage}%)
+                </Box>
+                <Box>
+                    Price <br />
+                    ${p && Math.round(10*p.price_current)/10}
+                </Box>
+            </Box>
+            </div>
+            <Typography variant="h6">Statistics</Typography>
+            <TableContainer component={Paper}>
+            <Table sx={{ minWidth: '100%' }} aria-label="simple table">
+                <TableHead>
+                <TableRow>
+                    <TableCell>GW</TableCell>
+                    <TableCell align="right">GameBetween</TableCell>
+                    <TableCell align="right">Result</TableCell>
+                    <TableCell align="right" title="Minutes Played">MP</TableCell>
+                    <TableCell align="right" title="Points">Pts</TableCell>
+                    <TableCell align="right" title="Goal Scored">GS</TableCell>
+                    <TableCell align="right" title="Assist">Asst</TableCell>
+                    <TableCell align="right" title="Own Goal">OG</TableCell>
+                    <TableCell align="right" title="Penalty Missed">PM</TableCell>
+                    <TableCell align="right" title="Yellow Card">YC</TableCell>
+                    <TableCell align="right" title="Red Card">RC</TableCell>
+                    <TableCell align="right" title="Goal Conceded">GC</TableCell>
+                    <TableCell align="right" title="Clean Sheet">CS</TableCell>
+                    <TableCell align="right" title="Saves">SV</TableCell>
+                    <TableCell align="right" title="Bonus Points">BPs</TableCell>
+                </TableRow>
+                </TableHead>
+                <TableBody>
+                {response.stats.map((p) => (
+                    <TableRow
+                    key={p.fixture_id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                    <TableCell>
+                        {p.gw_id}
+                    </TableCell>    
+                    <TableCell component="th" scope="row">
+                        {p.home_club} - {p.away_club}
+                    </TableCell>
+                    <TableCell align="right">{p.result || '-'}</TableCell>
+                    <TableCell align="right">{p.minutes_played}</TableCell>
+                    <TableCell align="right">{p.points}</TableCell>
+                    <TableCell align="right">{p.goal_scored}</TableCell>
+                    <TableCell align="right">{p.assist}</TableCell>
+                    <TableCell align="right">{p.own_goal}</TableCell>
+                    <TableCell align="right">{p.penalty_missed}</TableCell>
+                    <TableCell align="right">{p.yellow_card}</TableCell>
+                    <TableCell align="right">{p.red_card}</TableCell>
+                    <TableCell align="right">{p.goal_conceded}</TableCell>
+                    <TableCell align="right">{p.clean_sheet}</TableCell>
+                    <TableCell align="right">{p.saves}</TableCell>
+                    <TableCell align="right">{p.bonus_point}</TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+            </TableContainer>
+
+            <Typography variant="h6" sx={{my: 3}}>Fixture</Typography>
+            <TableContainer component={Paper}>
+            <Table sx={{ minWidth: '100%' }} aria-label="simple table">
+                <TableHead>
+                <TableRow>
+                    <TableCell>GW</TableCell>
+                    <TableCell >Game</TableCell>
+                    <TableCell align="right">Result</TableCell>
+                </TableRow>
+                </TableHead>
+                <TableBody>
+                {response.fixture.map((p) => (
+                    <TableRow
+                    key={p.fixture_id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                    <TableCell>
+                        {p.gw_id || '-'}
+                    </TableCell>    
+                    <TableCell component="th" scope="row">
+                        {p.home_club} - {p.away_club}
+                    </TableCell>
+                    <TableCell align="right">{p.result || '-'}</TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+            </TableContainer>
+        </DialogContent>
+    </>
+}
 
 const StatPage = () => {
 
@@ -33,7 +141,7 @@ const StatPage = () => {
         getPlayers()
     }, [sortBy, order])
 
-    const filteredPlayers = players.filter(p => (p.name.includes(name) && (position==='ALL' || p.position===position)))
+    const filteredPlayers = players.filter(p => (p.name.toLowerCase().includes(name.toLowerCase()) && (position==='ALL' || p.position===position)))
 
     return (<Grid container spacing={2} justifyContent="center" alignItems="center">
             <Dialog open={infoPlayer} onClose={handleClose} fullWidth='true'>

@@ -51,4 +51,18 @@ const addPlayer = async (name, club, position, ava_stat, ava_percentage, price) 
     return result.rowsAffected === 1
 }
 
-module.exports = {getAllPlayers, editPlayer, deletePlayer, addPlayer, getPlayersOrdered}
+const GET_PLAYER_STAT = `SELECT FS.*, FX.* FROM "fixture_stats" FS JOIN "fixture" FX ON (FS."fixture_id" = FX."id") WHERE "player_id" = :1`
+const GET_PLAYER_FIXTURE = `SELECT FX.* FROM "fixture" FX JOIN "player" P ON (P."club" = FX."home_club" OR P."club" = FX."away_club") WHERE P."id" = :1 ORDER BY "gw_id"`
+const GET_PLAYER = `SELECT * FROM ${VIEW_PLAYER_LIST} WHERE "id" = :1`
+
+const playerStats = async (playerId) => {
+    const result = {}
+    const connection = await getConnection()
+    result.stats = (await connection.execute(GET_PLAYER_STAT, [playerId])).rows
+    result.fixture = (await connection.execute(GET_PLAYER_FIXTURE, [playerId])).rows
+    result.player = (await connection.execute(GET_PLAYER, [playerId])).rows[0]
+    connection.release()
+    return result
+}
+
+module.exports = {getAllPlayers, editPlayer, deletePlayer, addPlayer, getPlayersOrdered, playerStats}
