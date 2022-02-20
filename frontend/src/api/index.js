@@ -170,6 +170,14 @@ export const adminPostProcess = async () => {
     return (await axios.get(`${API_URL}/admin/postprocess`))
 }
 
+export const updatePassword = async (oldPassword, password) => {
+    return (await axios.post(`${API_URL}/public/auth/changepass`, {oldPassword, password})).data
+}
+
+export const orderPlayerList = async (using) => {
+    return (await axios.get(`${API_URL}/user/playerorder?using=${using}`)).data
+}
+
 axios.interceptors.request.use( config => {
     const jwt = localStorage.getItem('JWT')
     if (jwt && config.url.includes(API_URL))

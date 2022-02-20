@@ -4,6 +4,8 @@ const controller = require('../controller/user')
 
 router.use(USER_AUTH)
 
+router.get('/playerorder', controller.getPlayerOrder)
+
 router.get('/hasteam', controller.hasTeam)
 
 router.post('/team', controller.createTeam)

@@ -65,4 +65,20 @@ const playerStats = async (playerId) => {
     return result
 }
 
-module.exports = {getAllPlayers, editPlayer, deletePlayer, addPlayer, getPlayersOrdered, playerStats}
+const AVAILIBILITY_ORDER = `SELECT "id", "name", "availibility_status", "availibility_percentage" FROM "player" ORDER BY "availibility_last_changed" DESC FETCH NEXT 10 ROWS ONLY`
+
+const PRICE_ORDER = `SELECT "id", "name", "price_current", "price_change_amount" FROM "player" ORDER BY "price_last_changed" DESC FETCH NEXT 10 ROWS ONLY`
+
+const playerChangedOrder = async (using) => {
+    const connection = await getConnection()
+    let result = []
+    if (using === 'price') {
+        result =  (await connection.execute(PRICE_ORDER)).rows
+    } else {
+        result =  (await connection.execute(AVAILIBILITY_ORDER)).rows
+    }
+    connection.release()
+    return result
+}
+
+module.exports = {getAllPlayers, editPlayer, deletePlayer, addPlayer, getPlayersOrdered, playerStats, playerChangedOrder}

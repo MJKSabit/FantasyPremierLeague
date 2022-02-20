@@ -1,5 +1,6 @@
 const team = require('../repository/team')
 const league = require('../repository/league')
+const player = require('../repository/player')
 
 const { BAD_REQUEST, errorInfo, CREATED, NOT_FOUND, OK } = require('./HttpStatus')
 
@@ -104,6 +105,11 @@ const deleteLeague = async (req, res) => {
         res.status(NOT_FOUND).json(errorInfo('Not Found/Not Owner'))
 }
 
+const getPlayerOrder = async (req, res) => {
+    const using = req.query.using || 'price'
+    res.status(OK).json(await player.playerChangedOrder(using))
+}
+
 module.exports = {
     addLeague,
     myLeague,
@@ -116,5 +122,6 @@ module.exports = {
     transferTeam,
     getPoints,
     leaveLeague,
-    deleteLeague
+    deleteLeague,
+    getPlayerOrder
 }

@@ -19,8 +19,8 @@ export default function PointsPage () {
     useEffect(() => {
         getSettingsAPI().then(d => {
             for (let i=0; i<d.length; i++)
-                if (d.key === 'POINTS_GW')
-                    setGwId(d.value)
+                if (d[i].key === 'POINTS_GW')
+                    setGwId(d[i].value)
         })
     }, [])
 

@@ -14,6 +14,7 @@ import HomePage from './anonymous/Home'
 import RegisterPage from "./anonymous/Register";
 import StatPage from "./anonymous/Stat";
 import CreateBlog from "./scout/CreateBlog";
+import Settings from "./Settings";
 import LeaguePage, { SingleLeague } from "./user/LeaguePage";
 import MyTeam from "./user/MyTeam";
 import PointsPage from "./user/PointsPage";
@@ -57,7 +58,7 @@ const CenterContent = () => (
                         <Route path='create' element={<CreateBlog />} />
                         <Route path='my' element={<BlogList disableLoading={true} getBlogs={getScoutBlog} heading={'My Blogs'}/>} />
                     </Route>
-                    <Route path='settings' element={<div>Change Password</div>} />
+                    <Route path='settings' element={<Settings /> } />
                 </Routes>
             </Paper>
         </Container>

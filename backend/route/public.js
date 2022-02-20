@@ -8,7 +8,7 @@ router.get('/club/all', club.allClub)
 router.post('/auth/login', auth.login)
 router.post('/auth/register', auth.register)
 
-// router.post('/auth/fotgot', auth.forgotPassword)
+router.post('/auth/changepass', auth.changePassword)
 
 router.get('/blog', public.getAllBlogs)
 router.get('/blog/:id', public.getBlog)

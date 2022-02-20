@@ -19,7 +19,6 @@ const addUserToRequest = (req, res, next) => {
             if (err) {
                 res.status(HttpStatus.UNAUTHORIZED).json(errorInfo(`Invalid 'authorization' Token`, err));
             } else {
-                console.log(user);
                 req.user = user;
                 next()
             }

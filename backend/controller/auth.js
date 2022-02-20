@@ -2,13 +2,14 @@ const bcryptjs = require('bcryptjs')
 const user = require('../repository/user')
 const HttpStatus = require('./HttpStatus')
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const { USER_TYPE_USER } = require('../repository/constants');
 const { validateEmail, validateUsername } = require('../util/validation');
-const { INTERNAL_SERVER_ERROR, CREATED, BAD_REQUEST, errorInfo } = require('./HttpStatus');
+const { INTERNAL_SERVER_ERROR, CREATED, BAD_REQUEST, errorInfo, OK, FORBIDDEN } = require('./HttpStatus');
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || 'i-do-not-care-what-the-key-is'
 
-const generate = (payload, expiresIn = '48h') => (
+const generate = (payload, expiresIn = '120h') => (
     jwt.sign(payload, JWT_SECRET_KEY, {expiresIn})
 )
 
@@ -73,4 +74,33 @@ const register = async (req, res) => {
     }
 }
 
-module.exports = { login, register }
+const changePassword = async (req, res) => {
+    const {oldPassword, password} = req.body
+
+    if (! req.user) {
+        res.status(FORBIDDEN).json(errorInfo('Sign In First!'))
+        return
+    }
+
+    if (!password) {
+        res.status(HttpStatus.BAD_REQUEST).send(HttpStatus.errorInfo('Blank Password'))
+        return
+    }
+
+    const username = req.user.username
+
+    const [user_data] = await user.getUser(username)
+    if (!user_data)
+        res.status(HttpStatus.NOT_FOUND).send(HttpStatus.errorInfo('User not found'))
+    else if (!bcryptjs.compareSync(oldPassword, user_data.hashed_password))
+        res.status(HttpStatus.UNAUTHORIZED).send(HttpStatus.errorInfo('Incorrect Password'))
+    else if (user_data.disabled)
+        res.status(403).send(HttpStatus.errorInfo('User Disabled'))
+    else {
+        const hashed_password = bcryptjs.hashSync(password)
+        await user.updatePassword(username, hashed_password)
+        res.status(OK).json(HttpStatus.errorInfo('Updated!'))
+    }
+}
+
+module.exports = { login, register, changePassword}

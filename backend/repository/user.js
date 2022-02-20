@@ -1,6 +1,6 @@
 const oracledb = require("oracledb")
 const { getConnection } = require("oracledb")
-const { TABLE_USER_USERNAME, TABLE_USER, TABLE_USER_EMAIL, TABLE_USER_NAME, TABLE_USER_DISABLED, TABLE_USER_USER_TYPE, PAGE_SIZE } = require("./constants")
+const { TABLE_USER_USERNAME, TABLE_USER, TABLE_USER_EMAIL, TABLE_USER_NAME, TABLE_USER_DISABLED, TABLE_USER_USER_TYPE, PAGE_SIZE, TABLE_USER_PASSWORD } = require("./constants")
 
 const GET_ONE_USER_QUERY = `SELECT * FROM ${TABLE_USER} WHERE ${TABLE_USER_USERNAME} = :1`
 
@@ -53,9 +53,17 @@ const createUser = async (username, full_name, email, hashed_password, user_type
     const connection = await getConnection()
     const result = await connection.execute(CREATE_USER, [username, full_name, email, hashed_password, favourite_club, user_type])
     connection.release()
-    console.log(result);
+    return result.rowsAffected === 1;
+}
+
+const UPDATE_PASSWORD = `UPDATE ${TABLE_USER} SET ${TABLE_USER_PASSWORD} = :1 WHERE ${TABLE_USER_USERNAME} = :2`
+
+const updatePassword = async (username, password) => {
+    const connection = await getConnection()
+    const result = await connection.execute(UPDATE_PASSWORD, [password, username])
+    connection.release()
     return result.rowsAffected === 1;
 }
 
 
-module.exports = {getUser, getUsers, disableUser, usernameAvailable, emailAvailable, createUser}
+module.exports = {getUser, getUsers, disableUser, usernameAvailable, emailAvailable, createUser, updatePassword}
