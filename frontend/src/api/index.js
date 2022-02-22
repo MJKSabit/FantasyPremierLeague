@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'https://d4d4-116-204-252-255.ngrok.io/api'
+const API_URL = 'http://localhost:8080/api'
 
 export const getAllClubs = async () => {
     const data = await axios.get(`${API_URL}/public/club/all`)
