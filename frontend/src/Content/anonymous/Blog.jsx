@@ -1,9 +1,9 @@
 import './blog.css'
-import { Button, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Grid, Typography } from "@mui/material"
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, CircularProgress, Grid, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useNavigate, useParams } from "react-router-dom"
 import {useState, useEffect} from 'react'
-import { getAllBlogs, getBlog } from '../../api'
+import { deleteBlog, getAllBlogs, getBlog } from '../../api'
 import MDEditor from '@uiw/react-md-editor';
 
 export const Blog = () => {
@@ -38,35 +38,45 @@ export const Blog = () => {
     </>)
 }
 
-const BlogCard = ({blog}) => {
+export const BlogCard = ({blog, deleteAction}) => {
 
+    const [b, setBlog] = useState(blog)
     const navigate = useNavigate();
 
+    if (!b)
+        return null
+
     return (<Card style={{width: '100%'}} >
-        <CardActionArea onClick={ e => {navigate(`/blog/${blog.id}`)}}>
-            <CardMedia component='img' height={140} image={blog.cover_image_url} />
+        <CardActionArea onClick={ e => {navigate(`/blog/${b.id}`)}}>
+            <CardMedia component='img' height={140} image={b.cover_image_url} />
             <CardContent>
                 <Typography gutterBottom variant="h6" component='div'>
-                    {blog.title}
+                    {b.title}
                 </Typography>
                 <Typography variant="subtitle2">
-                    {blog.name} • {blog.publication_date}
+                    {b.name} • {b.publication_date}
                 </Typography>
             </CardContent>
         </CardActionArea>
+        {deleteAction && <CardActions>
+            <Button variant='text' color='error' onClick={() => {
+                deleteBlog(b.id).then(d => {
+                    setBlog(null)
+                }).catch(console.log)
+            }}>Delete</Button>    
+        </CardActions>}
     </Card>
 )}
 
-const BlogList = ({getBlogs, heading}) => {
+const BlogList = () => {
 
-    getBlogs = getBlogs || getAllBlogs
     const disableLoading = false
 
     const [blogs, setBlogs] = useState([])
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
 
-    const fetchBlogs = () => {
+    let fetchBlogs = () => {
         setLoading(true)
         getAllBlogs(page).then(data => {
             setLoading(false)
@@ -79,12 +89,13 @@ const BlogList = ({getBlogs, heading}) => {
     }
 
     useEffect(() => {
+        setBlogs([])
         fetchBlogs()
     }, [])
 
     return (<>
         <Typography variant="h6">
-            { heading || `Learn from the exparts. Latest Blogs from our scouts`}.
+            Learn from the exparts. Latest Blogs from our scouts
         </Typography>
 
         <Grid container spacing={4} sx={{mt: 2}} >

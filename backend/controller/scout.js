@@ -31,7 +31,7 @@ const getMyBlog = async (req, res) => {
 
 const deleteBlog = async (req, res) => {
     const id = Number.parseInt(req.params.id)
-    if (await blog.deleteBlog(id, res.user.username))
+    if (await blog.deleteBlog(id, req.user.username))
         res.status(OK).json({status: 'Deleted'})
     else
         res.status(NOT_FOUND).json(errorInfo('Access not allowed or not found!'))

@@ -6,7 +6,6 @@ const INSERT_BLOG_SQL = `INSERT INTO ${TABLE_BLOG} (${TABLE_BLOG_WRITER}, ${TABL
 
 const insertBlog = async (writer, title, coverImgUrl, content) => {
     const connection = await getConnection()
-    console.log(INSERT_BLOG_SQL);
     const result = await connection.execute(INSERT_BLOG_SQL, [writer, title, coverImgUrl, content])
     connection.release()
     return result.rowsAffected == 1

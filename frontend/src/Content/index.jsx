@@ -1,6 +1,6 @@
 import { Box, Container, CssBaseline, Paper, Typography } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
-import { getScoutBlog } from "../api";
+import { getAllBlogs, getScoutBlog } from "../api";
 import AdminHome from "./admin/AdminHome";
 import GWManagement from "./admin/GWManagement";
 import MatchManagement from "./admin/MatchManagement";
@@ -14,6 +14,8 @@ import HomePage from './anonymous/Home'
 import RegisterPage from "./anonymous/Register";
 import StatPage from "./anonymous/Stat";
 import CreateBlog from "./scout/CreateBlog";
+import MyBlogList from "./scout/MyBlog";
+import ScoutHome from "./scout/ScoutHome";
 import Settings from "./Settings";
 import LeaguePage, { SingleLeague } from "./user/LeaguePage";
 import MyTeam from "./user/MyTeam";
@@ -34,7 +36,7 @@ const CenterContent = () => (
                     <Route path='stat' element={<StatPage />} />
                     <Route path='forgot' element={<ForgotPasswordPage />} />
                     <Route path='blog' >
-                        <Route index element={<BlogList />} />
+                        <Route index element={<BlogList getBlogs={getAllBlogs} />} />
                         <Route path=':blogId' element={<Blog />} />
                     </Route>
                     <Route path='register' element={<RegisterPage />} />
@@ -56,7 +58,8 @@ const CenterContent = () => (
                     </Route>
                     <Route path='scout'>
                         <Route path='create' element={<CreateBlog />} />
-                        <Route path='my' element={<BlogList disableLoading={true} getBlogs={getScoutBlog} heading={'My Blogs'}/>} />
+                        <Route path='my' element={<MyBlogList/>} />
+                        <Route path='home' element={<ScoutHome />} />
                     </Route>
                     <Route path='settings' element={<Settings /> } />
                 </Routes>

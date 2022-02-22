@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8080/api'
+const API_URL = 'https://d4d4-116-204-252-255.ngrok.io/api'
 
 export const getAllClubs = async () => {
     const data = await axios.get(`${API_URL}/public/club/all`)
@@ -44,6 +44,11 @@ export const getScoutBlog = async () => {
 
 export const createBlog = async (postData) => {
     return (await axios.post(`${API_URL}/scout/blog`, postData)).data
+}
+
+export const deleteBlog = async (id) => {
+    const data = await axios.delete(`${API_URL}/scout/blog/${id}`)
+    return data.data
 }
 
 export const register = async (username, name, email, password, favourite_club) => {
