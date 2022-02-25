@@ -64,5 +64,3 @@ Open Terminal at `./backend` and run `npm start`
 ### Frontend
 
 Open Terminal at `./frontend` and run `npm start`
-
-

@@ -61,7 +61,7 @@ UPDATE "settings" SET "value" = 2 WHERE "key" = 'POINT_STATUS';
 UPDATE "settings" SET "value" = CURRENT_GW + 1 WHERE "key" = 'CURRENT_GW';
 COMMIT;
 
-FOR GW_PTS IN (SELECT "team_id", SUM("points") "points" FROM "prev_gw_sqad" JOIN "fixture_stats" USING ("player_id") WHERE "gw_id" = 1 AND (SELECT "gw_id" FROM "fixture" F WHERE "fixture_id" = F."id") = "gw_id" GROUP BY "team_id") LOOP
+FOR GW_PTS IN (SELECT "team_id", SUM("points") "points" FROM "prev_gw_sqad" JOIN "fixture_stats" USING ("player_id") WHERE "gw_id" = CURRENT_GW AND (SELECT "gw_id" FROM "fixture" F WHERE "fixture_id" = F."id") = "gw_id" GROUP BY "team_id") LOOP
     -- GET SCORED POINTS IN THIS GAMEWEEK
     UPDATE "team" SET "total_points" = "total_points" + GW_PTS."points" WHERE "id" = GW_PTS."team_id";
 END LOOP;
